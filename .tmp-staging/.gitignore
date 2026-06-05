@@ -1,0 +1,13 @@
+node_modules
+dist
+.DS_Store
+.env
+.env.local
+*.log
+
+# SQLite database
+slottr.db
+slottr.db-journal
+slottr.db-wal
+slottr.db-shm
+
