@@ -11,7 +11,9 @@
 // Single-flight: parallel 401s share one in-flight /refresh promise so we don't
 // stampede the server with a dozen rotations at once.
 
-export const BASE_URL = 'http://localhost:3001'
+// In dev: defaults to local Express on :3001.
+// In prod: set VITE_API_URL on Vercel (e.g. https://slottr-api.onrender.com).
+export const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:3001'
 
 export const AUTH_EXPIRED_EVENT = 'slottr:auth-expired'
 

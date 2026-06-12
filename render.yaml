@@ -1,0 +1,30 @@
+# Render Blueprint — one-click deploy for the backend.
+# To use: push this file to GitHub, then in Render dashboard click
+# "New → Blueprint" and point at your repo.
+#
+# Environment variables you'll be prompted for:
+#   - JWT_SECRET          (generate: openssl rand -hex 32)
+#   - CORS_ORIGIN         (your Vercel URL, e.g. https://slottr.vercel.app)
+#   - TURSO_DATABASE_URL  (from turso CLI: turso db show <name> --url)
+#   - TURSO_AUTH_TOKEN    (from turso CLI: turso db tokens create <name>)
+
+services:
+  - type: web
+    name: slottr-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: JWT_SECRET
+        sync: false        # set manually in Render dashboard
+      - key: CORS_ORIGIN
+        sync: false
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false
