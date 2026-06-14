@@ -1,6 +1,7 @@
 # Slottr — Appointment Scheduler
 
 [![Maintainability](https://qlty.sh/gh/laruvas/projects/Dashboard/maintainability.svg)](https://qlty.sh/gh/laruvas/projects/Dashboard)
+[![Open Source Helpers](https://www.codetriage.com/laruvas/dashboard/badges/users.svg)](https://www.codetriage.com/laruvas/dashboard)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
