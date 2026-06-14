@@ -1,4 +1,4 @@
-# Slottr — Appointment Scheduler
+# Slottr — Build an Appointment Scheduler 
 
 [![Maintainability](https://qlty.sh/gh/laruvas/projects/Dashboard/maintainability.svg)](https://qlty.sh/gh/laruvas/projects/Dashboard)
 [![Open Source Helpers](https://www.codetriage.com/laruvas/dashboard/badges/users.svg)](https://www.codetriage.com/laruvas/dashboard)
