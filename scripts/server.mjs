@@ -1,20 +1,28 @@
 // Custom Express server — libSQL (Turso / local file) + JWT with refresh rotation.
 //
 // Endpoints (Bearer required unless noted):
-//   POST  /login, /register, /refresh, /logout
-//   GET   /users/:id, PATCH /users/:id
-//   GET/POST  /services            POST forces providerId from JWT
-//   GET/PATCH/DELETE /services/:id  owner only
-//   GET   /bookings                 current user as provider OR customer
-//   GET/POST/PATCH/DELETE /bookings/:id
-//   GET   /availability/:providerId?date=&duration=
-//   GET   /notifications, PATCH /:id, DELETE /:id, POST /mark-all-read
+// POST /login, /register, /refresh, /logout
+// GET /users/:id, PATCH /users/:id
+// GET/POST /services POST forces providerId from JWT
+// GET/PATCH/DELETE /services/:id owner only
+// GET /bookings current user as provider OR customer
+// GET/POST/PATCH/DELETE /bookings/:id
+// GET /availability/:providerId?date=&duration=
+// GET /notifications, PATCH /:id, DELETE /:id, POST /mark-all-read
+//
+// Pure helpers live in ./auth.mjs and ./availability.mjs so they can be
+// unit-tested without spinning up Express or the DB.
 
 import express from 'express'
 import cors from 'cors'
-import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { randomBytes, createHash } from 'node:crypto'
+import { randomBytes } from 'node:crypto'
+import { fileURLToPath } from 'node:url'
+import { signAccessToken, hashRefresh, parseToken } from './auth.mjs'
+import {
+  normalizeWorkingHours, dowKeyFromISO, calculateSlots,
+  hhmmToMin, DEFAULT_WORKING_HOURS,
+} from './availability.mjs'
 import {
   dbGet, dbAll, dbRun,
   rowToUser, rowToService, rowToBooking, rowToNotification,
@@ -28,35 +36,26 @@ const REFRESH_TTL_MS = REFRESH_TTL_DAYS * 24 * 60 * 60 * 1000
 const BCRYPT_ROUNDS = 10
 const MIN_NOTICE_MIN = 60
 
-// Allowed origins for CORS. In dev anything goes; in prod set CORS_ORIGIN.
-// Multiple origins can be comma-separated: CORS_ORIGIN=https://a.com,https://b.com
 const CORS_ORIGINS = (process.env.CORS_ORIGIN || '*')
   .split(',').map(s => s.trim()).filter(Boolean)
 
-const app = express()
+export const app = express()
 app.use(cors({
   origin: CORS_ORIGINS.includes('*') ? true : CORS_ORIGINS,
   credentials: false,
 }))
 app.use(express.json())
 
-// Healthcheck for Render — must respond fast, no DB calls needed.
 app.get('/healthz', (_req, res) => res.json({ ok: true }))
 
-/* ============== Auth helpers ============== */
+/* ============== Auth helpers (delegated to ./auth.mjs) ============== */
 
-const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
-
-function signAccessToken(user) {
-  return jwt.sign(
-    { sub: String(user.id), email: user.email },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN, algorithm: 'HS256' },
-  )
+function issueAccessToken(user) {
+  return signAccessToken(user, JWT_SECRET, JWT_EXPIRES_IN)
 }
 
-function hashRefresh(plain) {
-  return createHash('sha256').update(plain).digest('hex')
+function parseAuthHeader(req) {
+  return parseToken(req.headers.authorization || '', JWT_SECRET)
 }
 
 async function issueRefreshToken(userId) {
@@ -90,30 +89,18 @@ async function purgeExpiredRefreshTokens() {
 purgeExpiredRefreshTokens().catch(() => { /* ignore startup error */ })
 setInterval(() => { purgeExpiredRefreshTokens().catch(() => {}) }, 24 * 60 * 60 * 1000).unref()
 
-function parseToken(req) {
-  const header = req.headers.authorization || ''
-  const match = header.match(/^Bearer\s+(.+)$/)
-  if (!match) return null
-  try {
-    const decoded = jwt.verify(match[1], JWT_SECRET, { algorithms: ['HS256'] })
-    if (!decoded || typeof decoded === 'string') return null
-    return { userId: Number(decoded.sub), email: decoded.email }
-  } catch {
-    return null
-  }
-}
-
 function requireAuth(req, res, next) {
-  const u = parseToken(req)
+  const u = parseAuthHeader(req)
   if (!u) return res.status(401).json({ error: 'Authentication required' })
   req.user = u
   next()
 }
 
-/** Wrap an async handler so unhandled rejections become 500 instead of crashing. */
 const a = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
 /* ============== /register, /login ============== */
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 app.post('/register', a(async (req, res) => {
   const { email, password, name } = req.body || {}
@@ -135,7 +122,7 @@ app.post('/register', a(async (req, res) => {
   const userRow = await dbGet('SELECT * FROM users WHERE id = ?', [info.lastInsertRowid])
   const user = rowToUser(userRow)
   res.status(201).json({
-    accessToken: signAccessToken(user),
+    accessToken: issueAccessToken(user),
     refreshToken: await issueRefreshToken(user.id),
     user,
   })
@@ -150,7 +137,7 @@ app.post('/login', a(async (req, res) => {
   }
   const user = rowToUser(row)
   res.json({
-    accessToken: signAccessToken(user),
+    accessToken: issueAccessToken(user),
     refreshToken: await issueRefreshToken(user.id),
     user,
   })
@@ -161,7 +148,7 @@ app.post('/refresh', a(async (req, res) => {
   if (!session) return res.status(401).json({ error: 'Invalid or expired refresh token' })
   await dbRun('DELETE FROM refresh_tokens WHERE id = ?', [Number(session.tokenRow.id)])
   res.json({
-    accessToken: signAccessToken(session.user),
+    accessToken: issueAccessToken(session.user),
     refreshToken: await issueRefreshToken(session.user.id),
     user: session.user,
   })
@@ -219,7 +206,7 @@ app.get('/services/:id', requireAuth, a(async (req, res) => {
   res.json(rowToService(row))
 }))
 
-function validateServicePayload(body) {
+export function validateServicePayload(body) {
   const errs = []
   if (!body || typeof body !== 'object') return ['payload required']
   if (!body.tag || typeof body.tag !== 'object') errs.push('tag required')
@@ -313,7 +300,7 @@ app.post('/bookings', requireAuth, a(async (req, res) => {
   const service = await dbGet('SELECT * FROM services WHERE id = ?', [serviceId])
   if (!service) return res.status(400).json({ error: 'Unknown serviceId' })
   if (Number(service.providerId) !== req.user.userId) {
-    return res.status(403).json({ error: 'Cannot book another user\'s service' })
+    return res.status(403).json({ error: "Cannot book another user's service" })
   }
   const info = await dbRun(`
     INSERT INTO bookings (
@@ -382,34 +369,6 @@ app.delete('/bookings/:id', requireAuth, a(async (req, res) => {
 
 /* ============== /availability ============== */
 
-const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-const DEFAULT_WORKING_HOURS = {
-  mon: { start: '09:00', end: '18:00' },
-  tue: { start: '09:00', end: '18:00' },
-  wed: { start: '09:00', end: '18:00' },
-  thu: { start: '09:00', end: '18:00' },
-  fri: { start: '09:00', end: '18:00' },
-}
-
-const hhmmToMin = s => { const [h, m] = String(s).split(':').map(Number); return h * 60 + m }
-const minToHHMM = min => `${String(Math.floor(min / 60) % 24).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`
-
-function normalizeWorkingHours(wh) {
-  if (!wh || typeof wh !== 'object') return DEFAULT_WORKING_HOURS
-  if (typeof wh.start === 'string' && typeof wh.end === 'string') {
-    return DAY_KEYS.slice(0, 5).reduce((acc, k) => (acc[k] = { start: wh.start, end: wh.end }, acc), {})
-  }
-  const hasAnyDay = DAY_KEYS.some(k => wh[k])
-  if (!hasAnyDay) return DEFAULT_WORKING_HOURS
-  return wh
-}
-
-function dowKeyFromISO(iso) {
-  const [y, m, d] = iso.split('-').map(Number)
-  const jsDow = new Date(y, m - 1, d).getDay()
-  return DAY_KEYS[jsDow === 0 ? 6 : jsDow - 1]
-}
-
 app.get('/availability/:providerId', requireAuth, a(async (req, res) => {
   const providerId = Number(req.params.providerId)
   const dateISO = String(req.query.date || '')
@@ -427,9 +386,6 @@ app.get('/availability/:providerId', requireAuth, a(async (req, res) => {
   const window = hasOwn ? wh[dayKey] : (DEFAULT_WORKING_HOURS[dayKey] || null)
   if (!window) return res.json({ slots: [], workingHours: null })
 
-  const startMin = hhmmToMin(window.start)
-  const endMin = hhmmToMin(window.end)
-
   const blockingRows = await dbAll(`
     SELECT time, endTime, durationMin FROM bookings
     WHERE providerId = ? AND dateISO = ? AND status != 'cancelled'
@@ -440,19 +396,14 @@ app.get('/availability/:providerId', requireAuth, a(async (req, res) => {
     return [s, e]
   })
 
-  const now = new Date()
-  const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-  const cutoffMin = dateISO === todayISO ? now.getHours() * 60 + now.getMinutes() + MIN_NOTICE_MIN : -Infinity
-
-  const STEP = 60
-  const slots = []
-  for (let s = startMin; s + duration <= endMin; s += STEP) {
-    const e = s + duration
-    let available = true
-    if (s < cutoffMin) available = false
-    else for (const [bs, be] of blocking) if (s < be && bs < e) { available = false; break }
-    slots.push({ time: minToHHMM(s), available })
-  }
+  const slots = calculateSlots({
+    window,
+    blocking,
+    now: new Date(),
+    dateISO,
+    duration,
+    minNoticeMin: MIN_NOTICE_MIN,
+  })
   res.json({ slots, workingHours: window })
 }))
 
@@ -501,10 +452,14 @@ app.use((err, req, res, _next) => {
 
 /* ============== Boot ============== */
 
-app.listen(PORT, () => {
+export function startServer(port = PORT) {
   const dbInfo = process.env.TURSO_DATABASE_URL ? 'Turso (remote)' : 'local file ./slottr.db'
-  console.log(`  \\{^_^}/  Slottr API on port ${PORT}`)
-  console.log(`  DB:      ${dbInfo}`)
-  console.log(`  CORS:    ${CORS_ORIGINS.join(', ')}`)
-  console.log(`  JWT:     HS256, exp ${JWT_EXPIRES_IN}${process.env.JWT_SECRET ? '' : ' (DEFAULT secret — set JWT_SECRET in prod!)'}`)
-})
+  console.log(` {^_^}/ Slottr API on port ${port}`)
+  console.log(` DB: ${dbInfo}`)
+  console.log(` CORS: ${CORS_ORIGINS.join(', ')}`)
+  console.log(` JWT: HS256, exp ${JWT_EXPIRES_IN}${process.env.JWT_SECRET ? '' : ' (DEFAULT secret — set JWT_SECRET in prod!)'}`)
+  return app.listen(port)
+}
+
+const isMain = process.argv[1] && process.argv[1] === fileURLToPath(import.meta.url)
+if (isMain) startServer()
