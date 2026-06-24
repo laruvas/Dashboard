@@ -1,11 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState, type FormEvent } from 'react'
 import { Button, Field } from '../components/UI'
-import { ThemeToggle, LangToggle } from '../components/Toggles'
 import { useT } from '../i18n/SettingsContext'
 import { useAuth } from '../i18n/AuthContext'
 import { AuthError } from '../data/authApi'
 import { useToast } from '../components/Toast'
+import AuthShell from '../components/auth/AuthShell'
+import FieldError from '../components/service-form/FieldError'
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
 
@@ -63,82 +64,63 @@ export default function Register() {
   }
 
   return (
-    <div className="auth">
-      <div style={{ position: 'fixed', top: 16, right: 16, display: 'flex', gap: 8 }}>
-        <LangToggle />
-        <ThemeToggle />
-      </div>
+    <AuthShell
+      title={t('register.title')}
+      subtitle={t('register.subtitle')}
+      footer={<>{t('register.haveAccount')} <Link to="/login" className="btn-text">{t('register.signIn')}</Link></>}
+    >
+      <form onSubmit={submit} noValidate>
+        <Field label={t('register.name')}>
+          <input
+            className="input"
+            autoComplete="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            aria-invalid={!!errors.name}
+          />
+          {errors.name && <FieldError>{errors.name}</FieldError>}
+        </Field>
 
-      <div className="auth-card">
-        <Link to="/" className="flex flex-gap-3 mb-8" style={{ alignItems: 'center', fontWeight: 700, fontSize: 16 }}>
-          <span style={{ width: 28, height: 28, borderRadius: 7, background: 'var(--accent)', display: 'grid', placeItems: 'center', color: '#fff', fontWeight: 800 }}>S</span>
-          Slottr
-        </Link>
+        <Field label={t('login.email')}>
+          <input
+            className="input"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={!!errors.email}
+          />
+          {errors.email && <FieldError>{errors.email}</FieldError>}
+        </Field>
 
-        <h1 className="mb-2" style={{ fontSize: 28 }}>{t('register.title')}</h1>
-        <p className="subtitle mb-8">{t('register.subtitle')}</p>
+        <Field label={t('register.password')}>
+          <input
+            className="input"
+            type="password"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={!!errors.password}
+          />
+          {errors.password && <FieldError>{errors.password}</FieldError>}
+        </Field>
 
-        <form onSubmit={submit} noValidate>
-          <Field label={t('register.name')}>
-            <input
-              className="input"
-              autoComplete="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              aria-invalid={!!errors.name}
-            />
-            {errors.name && <FieldError>{errors.name}</FieldError>}
-          </Field>
+        <Field label={t('register.passwordConfirm')}>
+          <input
+            className="input"
+            type="password"
+            autoComplete="new-password"
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
+            aria-invalid={!!errors.passwordConfirm}
+          />
+          {errors.passwordConfirm && <FieldError>{errors.passwordConfirm}</FieldError>}
+        </Field>
 
-          <Field label={t('login.email')}>
-            <input
-              className="input"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              aria-invalid={!!errors.email}
-            />
-            {errors.email && <FieldError>{errors.email}</FieldError>}
-          </Field>
-
-          <Field label={t('register.password')}>
-            <input
-              className="input"
-              type="password"
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              aria-invalid={!!errors.password}
-            />
-            {errors.password && <FieldError>{errors.password}</FieldError>}
-          </Field>
-
-          <Field label={t('register.passwordConfirm')}>
-            <input
-              className="input"
-              type="password"
-              autoComplete="new-password"
-              value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-              aria-invalid={!!errors.passwordConfirm}
-            />
-            {errors.passwordConfirm && <FieldError>{errors.passwordConfirm}</FieldError>}
-          </Field>
-
-          <Button size="lg" block type="submit" disabled={submitting}>
-            {submitting ? t('register.submitting') : t('register.submit')}
-          </Button>
-        </form>
-
-        <p className="text-muted mt-8" style={{ textAlign: 'center', fontSize: 13 }}>
-          {t('register.haveAccount')} <Link to="/login" className="btn-text">{t('register.signIn')}</Link>
-        </p>
-      </div>
-    </div>
+        <Button size="lg" block type="submit" disabled={submitting}>
+          {submitting ? t('register.submitting') : t('register.submit')}
+        </Button>
+      </form>
+    </AuthShell>
   )
-}
-
-function FieldError({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: 'var(--danger)', fontSize: 12, marginTop: 4 }}>{children}</span>
 }

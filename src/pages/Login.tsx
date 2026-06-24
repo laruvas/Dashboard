@@ -1,11 +1,11 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, type FormEvent } from 'react'
 import { Button, Field } from '../components/UI'
-import { ThemeToggle, LangToggle } from '../components/Toggles'
 import { useT } from '../i18n/SettingsContext'
 import { useAuth } from '../i18n/AuthContext'
 import { AuthError } from '../data/authApi'
 import { useToast } from '../components/Toast'
+import AuthShell from '../components/auth/AuthShell'
 
 interface LocationState {
   from?: { pathname?: string }
@@ -46,54 +46,39 @@ export default function Login() {
   }
 
   return (
-    <div className="auth">
-      <div style={{ position: 'fixed', top: 16, right: 16, display: 'flex', gap: 8 }}>
-        <LangToggle />
-        <ThemeToggle />
-      </div>
+    <AuthShell
+      title={t('login.welcome')}
+      subtitle={t('login.subtitle')}
+      footer={<>{t('login.noAccount')} <Link to="/register" className="btn-text">{t('login.signUp')}</Link></>}
+    >
+      <form onSubmit={submit}>
+        <Field label={t('login.email')}>
+          <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </Field>
+        <Field label={t('login.password')}>
+          <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </Field>
 
-      <div className="auth-card">
-        <Link to="/" className="flex flex-gap-3 mb-8" style={{ alignItems: 'center', fontWeight: 700, fontSize: 16 }}>
-          <span style={{ width: 28, height: 28, borderRadius: 7, background: 'var(--accent)', display: 'grid', placeItems: 'center', color: '#fff', fontWeight: 800 }}>S</span>
-          Slottr
-        </Link>
+        <div className="flex-between mb-6" style={{ fontSize: 13 }}>
+          <label className="flex flex-gap-2 text-muted" style={{ alignItems: 'center', cursor: 'pointer' }}>
+            <input type="checkbox" defaultChecked /> {t('login.remember')}
+          </label>
+          <Link to="#" className="btn-text">{t('login.forgot')}</Link>
+        </div>
 
-        <h1 className="mb-2" style={{ fontSize: 28 }}>{t('login.welcome')}</h1>
-        <p className="subtitle mb-8">{t('login.subtitle')}</p>
+        <Button size="lg" block type="submit" disabled={submitting}>
+          {submitting ? t('login.signingIn') : t('login.signIn')}
+        </Button>
 
-        <form onSubmit={submit}>
-          <Field label={t('login.email')}>
-            <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </Field>
-          <Field label={t('login.password')}>
-            <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          </Field>
+        <div className="flex flex-gap-3" style={{ alignItems: 'center', margin: 'var(--s-6) 0' }}>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          <span className="text-subtle" style={{ fontSize: 12 }}>{t('login.or')}</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+        </div>
 
-          <div className="flex-between mb-6" style={{ fontSize: 13 }}>
-            <label className="flex flex-gap-2 text-muted" style={{ alignItems: 'center', cursor: 'pointer' }}>
-              <input type="checkbox" defaultChecked /> {t('login.remember')}
-            </label>
-            <Link to="#" className="btn-text">{t('login.forgot')}</Link>
-          </div>
-
-          <Button size="lg" block type="submit" disabled={submitting}>
-            {submitting ? t('login.signingIn') : t('login.signIn')}
-          </Button>
-
-          <div className="flex flex-gap-3" style={{ alignItems: 'center', margin: 'var(--s-6) 0' }}>
-            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-            <span className="text-subtle" style={{ fontSize: 12 }}>{t('login.or')}</span>
-            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-          </div>
-
-          <Button variant="ghost" size="lg" block type="button" className="mb-2">{t('login.google')}</Button>
-          <Button variant="ghost" size="lg" block type="button">{t('login.apple')}</Button>
-        </form>
-
-        <p className="text-muted mt-8" style={{ textAlign: 'center', fontSize: 13 }}>
-          {t('login.noAccount')} <Link to="/register" className="btn-text">{t('login.signUp')}</Link>
-        </p>
-      </div>
-    </div>
+        <Button variant="ghost" size="lg" block type="button" className="mb-2">{t('login.google')}</Button>
+        <Button variant="ghost" size="lg" block type="button">{t('login.apple')}</Button>
+      </form>
+    </AuthShell>
   )
 }

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Button, Card, Pill } from '../../components/UI'
-import { IconSearch } from '../../components/Icons'
 import EmptyState from '../../components/EmptyState'
+import SearchBox from '../../components/SearchBox'
 import { SkeletonCardGrid } from '../../components/Skeleton'
 import { loc } from '../../data/mock'
 import { useT, useSettings } from '../../i18n/SettingsContext'
@@ -74,29 +74,11 @@ export default function ServiceStep({
 
       {!loading && services.length > 0 && (
         <>
-          <div
-            className="mb-6"
-            style={{
-              background: 'var(--bg-elev-1)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--r-md)',
-              padding: 'var(--s-2) var(--s-3)',
-              display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
-              maxWidth: 420,
-            }}
-          >
-            <IconSearch style={{ color: 'var(--text-muted)' }} />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => onQueryChange(e.target.value)}
-              placeholder={t('services.search.placeholder')}
-              style={{
-                flex: 1, border: 'none', outline: 'none', background: 'none',
-                color: 'var(--text)', fontSize: 13,
-              }}
-            />
-          </div>
+          <SearchBox
+            value={query}
+            onChange={onQueryChange}
+            placeholder={t('services.search.placeholder')}
+          />
 
           <div className="services-layout">
             <aside className="services-filters">
