@@ -11,3 +11,8 @@ slottr.db-journal
 slottr.db-wal
 slottr.db-shm
 
+
+# Local refactor backups
+.quality-refactor-backup-*/
+.refactor-backup-*/
+*.backup.*
