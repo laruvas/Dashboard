@@ -107,10 +107,15 @@ export interface AppNotification {
   unread?: boolean
   /** Free-form interpolation params for the title/text templates. */
   params?: {
+    bookingId?: number | string
     service?: string
     withName?: string
     dateISO?: string
     time?: string
+    oldDateISO?: string
+    oldTime?: string
+    newDateISO?: string
+    newTime?: string
   }
 }
 

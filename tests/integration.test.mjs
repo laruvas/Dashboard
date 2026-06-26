@@ -370,3 +370,147 @@ describe('POST/PATCH /bookings conflict protection', () => {
     expect(res.body.error).toMatch(/already booked/i)
   })
 })
+
+describe('Booking notification params', () => {
+  beforeEach(resetDb)
+
+  async function createServiceForNotifications(accessToken) {
+    const res = await request(app)
+      .post('/services')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        tag: { en: 'lesson' },
+        name: { en: 'Notification service' },
+        description: { en: 'notification description' },
+        duration: 60,
+        price: 1000,
+      })
+    expect(res.status).toBe(201)
+    return res.body
+  }
+
+  async function createBookingForNotifications(accessToken, serviceId, overrides = {}) {
+    const res = await request(app)
+      .post('/bookings')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        serviceId,
+        dateISO: '2099-06-16',
+        time: '10:00',
+        withName: 'Client',
+        customerEmail: 'client@example.com',
+        ...overrides,
+      })
+    expect(res.status).toBe(201)
+    return res.body
+  }
+
+  it('adds bookingId to created booking notifications', async () => {
+    const { accessToken } = await registerUser({ email: 'notif-created@x.co' })
+    const service = await createServiceForNotifications(accessToken)
+    const booking = await createBookingForNotifications(accessToken, service.id)
+
+    const res = await request(app)
+      .get('/notifications')
+      .set('Authorization', `Bearer ${accessToken}`)
+
+    expect(res.status).toBe(200)
+    expect(res.body[0].kind).toBe('calendar')
+    expect(res.body[0].params.bookingId).toBe(booking.id)
+  })
+
+  it('adds bookingId to cancellation notifications', async () => {
+    const { accessToken } = await registerUser({ email: 'notif-cancel@x.co' })
+    const service = await createServiceForNotifications(accessToken)
+    const booking = await createBookingForNotifications(accessToken, service.id)
+
+    const patch = await request(app)
+      .patch(`/bookings/${booking.id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({ status: 'cancelled' })
+    expect(patch.status).toBe(200)
+
+    const res = await request(app)
+      .get('/notifications')
+      .set('Authorization', `Bearer ${accessToken}`)
+
+    const notification = res.body.find((item) => item.kind === 'close')
+    expect(notification).toBeTruthy()
+    expect(notification.params.bookingId).toBe(booking.id)
+    expect(notification.params.withName).toBe('Client')
+  })
+
+  it('adds old and new schedule values to reschedule notifications', async () => {
+    const { accessToken } = await registerUser({ email: 'notif-reschedule@x.co' })
+    const service = await createServiceForNotifications(accessToken)
+    const booking = await createBookingForNotifications(accessToken, service.id, {
+      dateISO: '2099-06-16',
+      time: '10:00',
+    })
+
+    const patch = await request(app)
+      .patch(`/bookings/${booking.id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({ dateISO: '2099-06-17', time: '12:00' })
+    expect(patch.status).toBe(200)
+
+    const res = await request(app)
+      .get('/notifications')
+      .set('Authorization', `Bearer ${accessToken}`)
+
+    const notification = res.body.find((item) => item.kind === 'clock')
+    expect(notification).toBeTruthy()
+    expect(notification.params).toMatchObject({
+      bookingId: booking.id,
+      oldDateISO: '2099-06-16',
+      oldTime: '10:00',
+      newDateISO: '2099-06-17',
+      newTime: '12:00',
+    })
+  })
+})
+
+describe('Notification deletion', () => {
+  beforeEach(resetDb)
+
+  it('deletes any owned notification', async () => {
+    const { accessToken } = await registerUser({ email: 'delete-notification@x.co' })
+    const serviceRes = await request(app)
+      .post('/services')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        tag: { en: 'lesson' },
+        name: { en: 'Notification delete service' },
+        description: { en: 'description' },
+        duration: 60,
+        price: 1000,
+      })
+    expect(serviceRes.status).toBe(201)
+
+    const bookingRes = await request(app)
+      .post('/bookings')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        serviceId: serviceRes.body.id,
+        dateISO: '2099-06-16',
+        time: '10:00',
+        withName: 'Client',
+      })
+    expect(bookingRes.status).toBe(201)
+
+    const listBefore = await request(app)
+      .get('/notifications')
+      .set('Authorization', `Bearer ${accessToken}`)
+    expect(listBefore.body.length).toBe(1)
+
+    const del = await request(app)
+      .delete(`/notifications/${listBefore.body[0].id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+    expect(del.status).toBe(204)
+
+    const listAfter = await request(app)
+      .get('/notifications')
+      .set('Authorization', `Bearer ${accessToken}`)
+    expect(listAfter.body).toEqual([])
+  })
+})

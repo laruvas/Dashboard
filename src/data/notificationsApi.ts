@@ -1,6 +1,18 @@
 import { apiFetch } from './http'
 import type { AppNotification } from '../types'
 
+export const NOTIFICATIONS_CHANGED_EVENT = 'slottr:notifications-changed'
+
+export interface NotificationsChangedDetail {
+  unreadCount?: number
+}
+
+export function notifyNotificationsChanged(detail: NotificationsChangedDetail = {}): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(NOTIFICATIONS_CHANGED_EVENT, { detail }))
+  }
+}
+
 /** GET /notifications — current user's feed, newest first. */
 export function listNotifications(): Promise<AppNotification[]> {
   return apiFetch<AppNotification[]>('/notifications')

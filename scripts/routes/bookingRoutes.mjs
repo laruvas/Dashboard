@@ -154,6 +154,7 @@ export function registerBookingRoutes(app) {
         req.user.userId,
         'calendar',
         {
+          bookingId: row.id,
           service: row.service,
           withName: row.withName,
           dateISO: row.dateISO,
@@ -230,7 +231,9 @@ export function registerBookingRoutes(app) {
           req.user.userId,
           'close',
           {
+            bookingId: updated.id,
             service: updated.service,
+            withName: updated.withName,
             dateISO: updated.dateISO,
             time: updated.time,
           },
@@ -241,7 +244,13 @@ export function registerBookingRoutes(app) {
           req.user.userId,
           'clock',
           {
+            bookingId: updated.id,
             service: updated.service,
+            withName: updated.withName,
+            oldDateISO: existing.dateISO,
+            oldTime: existing.time,
+            newDateISO: updated.dateISO,
+            newTime: updated.time,
             dateISO: updated.dateISO,
             time: updated.time,
           },

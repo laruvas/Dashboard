@@ -211,6 +211,33 @@ textarea {
   height: 16px;
   flex: none;
 }
+
+.nav-badge {
+  margin-left: auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+.topbar-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
 .nav .section-label {
   font-size: 11px;
   text-transform: uppercase;
@@ -1087,9 +1114,12 @@ h3 {
   border-bottom: 1px solid var(--border);
   align-items: flex-start;
   transition: background 0.15s;
+  cursor: default;
+}
+.notif-row.clickable {
   cursor: pointer;
 }
-.notif-row:hover {
+.notif-row.clickable:hover {
   background: var(--bg-elev-2);
 }
 .notif-row:last-child {
@@ -1129,4 +1159,29 @@ h3 {
   font-size: 11.5px;
   color: var(--text-subtle);
   flex: none;
+}
+
+.notif-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+  font-size: 12px;
+}
+.notif-action {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+}
+.notif-action.danger {
+  color: var(--danger);
+}
+.notif-action.muted {
+  color: var(--text-muted);
+}
+.notif-action:hover {
+  text-decoration: underline;
 }

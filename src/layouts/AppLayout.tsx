@@ -1,5 +1,5 @@
 import { NavLink, Outlet, Link } from 'react-router-dom'
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import {
   IconDashboard,
   IconCalendar,
@@ -15,6 +15,7 @@ import { ThemeToggle, LangToggle } from '../components/Toggles'
 import { useCommandPalette } from '../components/CommandPalette'
 import { useT } from '../i18n/SettingsContext'
 import { useAuth } from '../i18n/AuthContext'
+import { listNotifications, NOTIFICATIONS_CHANGED_EVENT } from '../data/notificationsApi'
 
 // "Anna Smith" -> "AS"
 function initialsFrom(name: string): string {
@@ -33,13 +34,17 @@ interface NavItemProps {
   to: string
   icon: ReactNode
   children: ReactNode
+  badge?: number
 }
 
-function NavItem({ to, icon, children }: NavItemProps) {
+function NavItem({ to, icon, children, badge }: NavItemProps) {
   return (
     <NavLink to={to} className={({ isActive }) => (isActive ? 'active' : '')}>
       {icon}
       <span>{children}</span>
+      {badge != null && badge > 0 && (
+        <span className="nav-badge">{badge > 99 ? '99+' : badge}</span>
+      )}
     </NavLink>
   )
 }
@@ -51,6 +56,43 @@ export default function AppLayout() {
   // ProtectedRoute guarantees user is non-null here, but guard anyway.
   const displayName = user?.name || '—'
   const displayEmail = user?.email || ''
+  const [unreadNotifications, setUnreadNotifications] = useState(0)
+
+  useEffect(() => {
+  let mounted = true
+
+  const loadUnread = () => {
+    listNotifications()
+      .then((rows) => {
+        if (mounted) {
+          setUnreadNotifications(rows.filter((item) => item.unread).length)
+        }
+      })
+      .catch(() => {
+        if (mounted) setUnreadNotifications(0)
+      })
+  }
+
+  const onNotificationsChanged = (event: Event) => {
+    const detail = (event as CustomEvent<{ unreadCount?: number }>).detail
+
+    if (typeof detail?.unreadCount === 'number') {
+      setUnreadNotifications(detail.unreadCount)
+      return
+    }
+
+    loadUnread()
+  }
+
+  loadUnread()
+  window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, onNotificationsChanged)
+
+  return () => {
+    mounted = false
+    window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, onNotificationsChanged)
+  }
+}, [])
+
   return (
     <div className="app">
       <aside className="sidebar">
@@ -72,7 +114,7 @@ export default function AppLayout() {
           <NavItem to="/bookings" icon={<IconCheck />}>
             {t('nav.bookings')}
           </NavItem>
-          <NavItem to="/notifications" icon={<IconBell />}>
+          <NavItem to="/notifications" icon={<IconBell />} badge={unreadNotifications}>
             {t('nav.notifications')}
           </NavItem>
 
@@ -131,8 +173,10 @@ export default function AppLayout() {
               to="/notifications"
               className="btn btn-ghost btn-sm"
               title={t('common.notifications')}
+              style={{ position: 'relative' }}
             >
               <IconBell />
+              {unreadNotifications > 0 && <span className="topbar-badge" />}
             </Link>
             <Link to="/booking" className="btn btn-primary btn-sm">
               <IconPlus /> {t('nav.newBooking')}
