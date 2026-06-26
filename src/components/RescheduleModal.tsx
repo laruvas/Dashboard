@@ -4,7 +4,8 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Modal from './Modal'
-import { Button, Field } from './UI'
+import Calendar from './Calendar'
+import { Button, Field, LabelMono } from './UI'
 import { getAvailability } from '../data/availabilityApi'
 import { useT } from '../i18n/SettingsContext'
 import type { AvailabilitySlot, Booking } from '../types'
@@ -28,6 +29,11 @@ function addMinutesHHMM(time: string, minutesToAdd: number): string {
   const h = String(Math.floor(total / 60) % 24).padStart(2, '0')
   const m = String(total % 60).padStart(2, '0')
   return `${h}:${m}`
+}
+
+function dateFromISO(iso: string): Date {
+  const [year, month, day] = iso.split('-').map(Number)
+  return new Date(year, month - 1, day)
 }
 
 export default function RescheduleModal({ booking, onClose, onSubmit }: RescheduleModalProps) {
@@ -72,6 +78,17 @@ export default function RescheduleModal({ booking, onClose, onSubmit }: Reschedu
   }, [booking, dateISO, t])
 
   const todayISO = useMemo(() => toISODate(new Date()), [])
+  const selectedDate = useMemo(() => (dateISO ? dateFromISO(dateISO) : new Date()), [dateISO])
+  const dateLabel = useMemo(
+    () =>
+      selectedDate.toLocaleDateString(undefined, {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+    [selectedDate],
+  )
   const freeTimes = useMemo(
     // Allow keeping the current slot even if it shows up as "taken" (by this same booking).
     () =>
@@ -107,13 +124,20 @@ export default function RescheduleModal({ booking, onClose, onSubmit }: Reschedu
       </div>
 
       <Field label={t('booking.pickDate')}>
-        <input
-          className="input mono"
-          type="date"
-          min={todayISO}
-          value={dateISO}
-          onChange={(e) => setDateISO(e.target.value)}
-        />
+        <div className="card" style={{ padding: 'var(--s-3)', maxWidth: 360 }}>
+          <div className="flex-between mb-3">
+            <LabelMono>{dateLabel}</LabelMono>
+            <span className="text-muted mono" style={{ fontSize: 12 }}>
+              {dateISO}
+            </span>
+          </div>
+          <Calendar
+            compact
+            value={selectedDate}
+            minDate={dateFromISO(todayISO)}
+            onChange={(nextDate) => setDateISO(toISODate(nextDate))}
+          />
+        </div>
       </Field>
 
       <Field label={t('booking.availableTimes')}>
@@ -161,3 +185,4 @@ export default function RescheduleModal({ booking, onClose, onSubmit }: Reschedu
     </Modal>
   )
 }
+
