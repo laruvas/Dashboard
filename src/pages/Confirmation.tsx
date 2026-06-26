@@ -7,7 +7,11 @@ import type { Booking, Lang } from '../types'
 
 function safeParse(str: string | null): Booking | null {
   if (!str) return null
-  try { return JSON.parse(str) as Booking } catch { return null }
+  try {
+    return JSON.parse(str) as Booking
+  } catch {
+    return null
+  }
 }
 
 function formatDate(iso: string | undefined, lang: Lang): string {
@@ -15,7 +19,10 @@ function formatDate(iso: string | undefined, lang: Lang): string {
   const [y, m, d] = iso.split('-').map(Number)
   const date = new Date(y, m - 1, d)
   return date.toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', {
-    weekday: 'short', month: 'long', day: 'numeric', year: 'numeric',
+    weekday: 'short',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
   })
 }
 
@@ -23,9 +30,8 @@ export default function Confirmation() {
   const t = useT()
   const { lang } = useSettings()
 
-  const booking = typeof window !== 'undefined'
-    ? safeParse(sessionStorage.getItem('lastBooking'))
-    : null
+  const booking =
+    typeof window !== 'undefined' ? safeParse(sessionStorage.getItem('lastBooking')) : null
 
   if (!booking) {
     return (
@@ -34,9 +40,17 @@ export default function Confirmation() {
         <p className="subtitle mb-8">{t('conf.noBookingSub')}</p>
 
         <div className="flex flex-gap-3">
-          <Button as="link" to="/booking">{t('conf.createBooking')}</Button>
-          <Button as="link" to="/bookings" variant="ghost">{t('conf.viewBookings')}</Button>
-          <Link to="/dashboard" className="btn-text" style={{ marginLeft: 'auto', alignSelf: 'center' }}>
+          <Button as="link" to="/booking">
+            {t('conf.createBooking')}
+          </Button>
+          <Button as="link" to="/bookings" variant="ghost">
+            {t('conf.viewBookings')}
+          </Button>
+          <Link
+            to="/dashboard"
+            className="btn-text"
+            style={{ marginLeft: 'auto', alignSelf: 'center' }}
+          >
             {t('conf.backToDashboard')}
           </Link>
         </div>
@@ -49,7 +63,17 @@ export default function Confirmation() {
 
   return (
     <div style={{ maxWidth: 560, marginTop: 80 }}>
-      <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--accent-soft)', display: 'grid', placeItems: 'center', marginBottom: 24 }}>
+      <div
+        style={{
+          width: 48,
+          height: 48,
+          borderRadius: 12,
+          background: 'var(--accent-soft)',
+          display: 'grid',
+          placeItems: 'center',
+          marginBottom: 24,
+        }}
+      >
         <IconCheck width={24} height={24} stroke="var(--accent)" strokeWidth={2.2} />
       </div>
 
@@ -69,7 +93,9 @@ export default function Confirmation() {
           </div>
           <div>
             <LabelMono>{t('conf.field.reference')}</LabelMono>
-            <div className="mono" style={{ marginTop: 8 }}>#{ref}</div>
+            <div className="mono" style={{ marginTop: 8 }}>
+              #{ref}
+            </div>
           </div>
           <div>
             <LabelMono>{t('conf.field.date')}</LabelMono>
@@ -98,7 +124,9 @@ export default function Confirmation() {
           <>
             <Divider />
             <LabelMono>{t('conf.field.notes')}</LabelMono>
-            <div style={{ marginTop: 8, whiteSpace: 'pre-wrap', fontSize: 14 }}>{booking.notes}</div>
+            <div style={{ marginTop: 8, whiteSpace: 'pre-wrap', fontSize: 14 }}>
+              {booking.notes}
+            </div>
           </>
         )}
 
@@ -116,8 +144,14 @@ export default function Confirmation() {
         <Button onClick={() => downloadIcs(booking, `slottr-${ref}.ics`)}>
           {t('conf.btn.addToCal')}
         </Button>
-        <Button as="link" to={`/bookings/${booking.id}`} variant="ghost">{t('conf.btn.manage')}</Button>
-        <Link to="/dashboard" className="btn-text" style={{ marginLeft: 'auto', alignSelf: 'center' }}>
+        <Button as="link" to={`/bookings/${booking.id}`} variant="ghost">
+          {t('conf.btn.manage')}
+        </Button>
+        <Link
+          to="/dashboard"
+          className="btn-text"
+          style={{ marginLeft: 'auto', alignSelf: 'center' }}
+        >
           {t('common.done')}
         </Link>
       </div>

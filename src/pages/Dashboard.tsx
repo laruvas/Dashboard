@@ -34,24 +34,38 @@ export default function Dashboard() {
   useEffect(() => {
     let mounted = true
     listBookings()
-      .then((data) => { if (mounted) { setRawBookings(data); setError(null) } })
-      .catch(() => { if (mounted) setError(t('dashboard.errorServer')) })
-      .finally(() => { if (mounted) setLoading(false) })
-    return () => { mounted = false }
+      .then((data) => {
+        if (mounted) {
+          setRawBookings(data)
+          setError(null)
+        }
+      })
+      .catch(() => {
+        if (mounted) setError(t('dashboard.errorServer'))
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+    return () => {
+      mounted = false
+    }
   }, [t])
 
   // Dashboard is the "specialist panel": only show bookings where the current
   // user is the PROVIDER. Customer-side bookings live in /bookings under
   // the "Mine" scope.
   const bookings = useMemo(
-    () => userId == null ? [] : rawBookings.filter(b => Number(b.providerId) === userId),
+    () => (userId == null ? [] : rawBookings.filter((b) => Number(b.providerId) === userId)),
     [rawBookings, userId],
   )
 
   const stats = useMemo(() => calculateDashboardStats(bookings), [bookings])
 
   const weekStart = useMemo(() => startOfWeek(weekAnchor), [weekAnchor])
-  const days = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart])
+  const days = useMemo(
+    () => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)),
+    [weekStart],
+  )
   const weekEventsByDay = useMemo(
     () => groupWeekEvents(bookings, weekAnchor, days),
     [bookings, weekAnchor, days],
@@ -69,7 +83,10 @@ export default function Dashboard() {
       <DashboardHeader greetingName={greetingName} todayCount={stats.todayCount} />
 
       {error && (
-        <div className="card mb-6" style={{ borderColor: 'rgba(248,113,113,0.32)', color: 'var(--danger)' }}>
+        <div
+          className="card mb-6"
+          style={{ borderColor: 'rgba(248,113,113,0.32)', color: 'var(--danger)' }}
+        >
           {error}
         </div>
       )}

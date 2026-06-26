@@ -23,7 +23,15 @@ export function startOfWeek(d: Date): Date {
 /** Sunday (23:59:59.999) of the week containing the given date. */
 export function endOfWeek(d: Date): Date {
   const monday = startOfWeek(d)
-  const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999)
+  const sunday = new Date(
+    monday.getFullYear(),
+    monday.getMonth(),
+    monday.getDate() + 6,
+    23,
+    59,
+    59,
+    999,
+  )
   return sunday
 }
 
@@ -44,9 +52,11 @@ export function addDays(d: Date, days: number): Date {
 
 /** True if two dates fall on the same calendar day (local time). */
 export function isSameDay(a: Date, b: Date): boolean {
-  return a.getFullYear() === b.getFullYear()
-      && a.getMonth() === b.getMonth()
-      && a.getDate() === b.getDate()
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  )
 }
 
 /** Check if booking's dateISO is within [start, end] inclusive (day precision). */

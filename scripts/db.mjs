@@ -20,9 +20,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 //
 // LIBSQL_URL is an undocumented escape hatch used by the test suite so it
 // can spin up an in-memory database without touching the real slottr.db.
-const url = process.env.LIBSQL_URL
-  || process.env.TURSO_DATABASE_URL
-  || `file:${resolve(__dirname, '..', 'slottr.db')}`
+const url =
+  process.env.LIBSQL_URL ||
+  process.env.TURSO_DATABASE_URL ||
+  `file:${resolve(__dirname, '..', 'slottr.db')}`
 const authToken = process.env.TURSO_AUTH_TOKEN
 
 export const db = createClient({ url, authToken })
@@ -103,7 +104,11 @@ await migrate()
 
 const parseJSON = (s, fallback) => {
   if (s == null) return fallback
-  try { return JSON.parse(s) } catch { return fallback }
+  try {
+    return JSON.parse(s)
+  } catch {
+    return fallback
+  }
 }
 
 export function rowToUser(row) {

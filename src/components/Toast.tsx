@@ -18,8 +18,8 @@ interface ToastItem {
 
 interface ToastApi {
   success: (message: ReactNode) => void
-  error:   (message: ReactNode) => void
-  info:    (message: ReactNode) => void
+  error: (message: ReactNode) => void
+  info: (message: ReactNode) => void
 }
 
 const ToastContext = createContext<ToastApi | null>(null)
@@ -32,22 +32,25 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const push = useCallback((kind: ToastKind, message: ReactNode) => {
     const id = ++counter
-    setItems(prev => [...prev, { id, kind, message }])
+    setItems((prev) => [...prev, { id, kind, message }])
     setTimeout(() => {
-      setItems(prev => prev.filter(t => t.id !== id))
+      setItems((prev) => prev.filter((t) => t.id !== id))
     }, DURATION_MS)
   }, [])
 
   const api: ToastApi = {
     success: (m) => push('success', m),
-    error:   (m) => push('error', m),
-    info:    (m) => push('info', m),
+    error: (m) => push('error', m),
+    info: (m) => push('info', m),
   }
 
   return (
     <ToastContext.Provider value={api}>
       {children}
-      <ToastContainer items={items} onDismiss={(id) => setItems(prev => prev.filter(t => t.id !== id))} />
+      <ToastContainer
+        items={items}
+        onDismiss={(id) => setItems((prev) => prev.filter((t) => t.id !== id))}
+      />
     </ToastContext.Provider>
   )
 }
@@ -58,7 +61,13 @@ export function useToast(): ToastApi {
   return ctx
 }
 
-function ToastContainer({ items, onDismiss }: { items: ToastItem[]; onDismiss: (id: number) => void }) {
+function ToastContainer({
+  items,
+  onDismiss,
+}: {
+  items: ToastItem[]
+  onDismiss: (id: number) => void
+}) {
   return (
     <div
       role="region"
@@ -74,7 +83,9 @@ function ToastContainer({ items, onDismiss }: { items: ToastItem[]; onDismiss: (
         maxWidth: 360,
       }}
     >
-      {items.map(t => <ToastView key={t.id} item={t} onDismiss={() => onDismiss(t.id)} />)}
+      {items.map((t) => (
+        <ToastView key={t.id} item={t} onDismiss={() => onDismiss(t.id)} />
+      ))}
     </div>
   )
 }
@@ -89,8 +100,8 @@ function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
 
   const colorByKind: Record<ToastKind, string> = {
     success: 'var(--success)',
-    error:   'var(--danger)',
-    info:    'var(--accent)',
+    error: 'var(--danger)',
+    info: 'var(--accent)',
   }
 
   return (

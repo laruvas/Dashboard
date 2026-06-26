@@ -1,5 +1,10 @@
+import { makeService } from './helpers/factories.mjs'
 import { describe, expect, it } from 'vitest'
-import { buildServiceFilters, filterServices, matchesServiceQuery } from '../src/pages/services/servicesUtils.ts'
+import {
+  buildServiceFilters,
+  filterServices,
+  matchesServiceQuery,
+} from '../src/pages/services/servicesUtils.ts'
 import {
   toServiceFormValues,
   toServicePayload,
@@ -8,24 +13,13 @@ import {
 
 const t = (key) => key
 
-const service = {
-  id: 'svc-1',
-  providerId: 1,
-  tag: { en: 'lesson', ru: 'урок' },
-  tone: 'accent',
-  duration: 60,
-  price: 100,
-  name: { en: 'English lesson', ru: 'Урок английского' },
-  description: { en: 'Speaking practice', ru: 'Разговорная практика' },
-}
-
-const secondService = {
-  ...service,
+const service = makeService()
+const secondService = makeService({
   id: 'svc-2',
   tag: { en: 'consulting', ru: 'консультация' },
   name: { en: 'Career consulting', ru: 'Карьерная консультация' },
   description: { en: 'Career plan', ru: 'План карьеры' },
-}
+})
 
 describe('servicesUtils', () => {
   it('matches service by localized text', () => {
@@ -44,8 +38,12 @@ describe('servicesUtils', () => {
   })
 
   it('filters services by tag and query', () => {
-    expect(filterServices([service, secondService], 'consulting', '', 'en').map(s => s.id)).toEqual(['svc-2'])
-    expect(filterServices([service, secondService], 'all', 'english', 'en').map(s => s.id)).toEqual(['svc-1'])
+    expect(
+      filterServices([service, secondService], 'consulting', '', 'en').map((s) => s.id),
+    ).toEqual(['svc-2'])
+    expect(
+      filterServices([service, secondService], 'all', 'english', 'en').map((s) => s.id),
+    ).toEqual(['svc-1'])
   })
 })
 
@@ -88,10 +86,20 @@ describe('serviceFormUtils', () => {
   })
 
   it('validates required fields and numeric constraints', () => {
-    const errors = validateServiceForm({
-      tagEn: '', tagRu: '', tone: 'muted', duration: 0, price: -1,
-      nameEn: '', nameRu: '', descEn: '', descRu: '',
-    }, t)
+    const errors = validateServiceForm(
+      {
+        tagEn: '',
+        tagRu: '',
+        tone: 'muted',
+        duration: 0,
+        price: -1,
+        nameEn: '',
+        nameRu: '',
+        descEn: '',
+        descRu: '',
+      },
+      t,
+    )
 
     expect(errors).toMatchObject({
       tagEn: 'validation.required',

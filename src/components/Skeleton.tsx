@@ -15,7 +15,10 @@ export function useDelayedFlag(active: boolean, delayMs: number = 300): boolean 
   const [shown, setShown] = useState(false)
 
   useEffect(() => {
-    if (!active) { setShown(false); return }
+    if (!active) {
+      setShown(false)
+      return
+    }
     const id = window.setTimeout(() => setShown(true), delayMs)
     return () => window.clearTimeout(id)
   }, [active, delayMs])
@@ -74,7 +77,9 @@ export function SkeletonCard() {
 export function SkeletonCardGrid({ count = 6 }: { count?: number }) {
   return (
     <div className="services-grid">
-      {Array.from({ length: count }, (_, i) => <SkeletonCard key={i} />)}
+      {Array.from({ length: count }, (_, i) => (
+        <SkeletonCard key={i} />
+      ))}
     </div>
   )
 }
@@ -95,7 +100,9 @@ export function SkeletonTableRow({ cols = 6 }: { cols?: number }) {
   return (
     <tr>
       {Array.from({ length: cols }, (_, i) => (
-        <td key={i}><Skeleton height={14} /></td>
+        <td key={i}>
+          <Skeleton height={14} />
+        </td>
       ))}
     </tr>
   )
@@ -105,7 +112,9 @@ export function SkeletonTableRow({ cols = 6 }: { cols?: number }) {
 export function SkeletonList({ count = 5, gap = 12 }: { count?: number; gap?: number }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap }}>
-      {Array.from({ length: count }, (_, i) => <Skeleton key={i} height={14} />)}
+      {Array.from({ length: count }, (_, i) => (
+        <Skeleton key={i} height={14} />
+      ))}
     </div>
   )
 }

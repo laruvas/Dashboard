@@ -36,9 +36,17 @@ export function buildPaletteResults({
 
   for (const s of services) {
     const haystack = [
-      loc(s.name, lang), loc(s.description, lang), loc(s.tag, lang),
-      s.name?.en, s.name?.ru, s.tag?.en, s.tag?.ru,
-    ].filter(Boolean).join(' ').toLowerCase()
+      loc(s.name, lang),
+      loc(s.description, lang),
+      loc(s.tag, lang),
+      s.name?.en,
+      s.name?.ru,
+      s.tag?.en,
+      s.tag?.ru,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
 
     if (haystack.includes(q)) {
       items.push({
@@ -53,8 +61,17 @@ export function buildPaletteResults({
 
   for (const b of bookings) {
     const haystack = [
-      b.service, b.withName, b.customerEmail, b.customerPhone, b.notes, b.dateISO, b.time,
-    ].filter(Boolean).join(' ').toLowerCase()
+      b.service,
+      b.withName,
+      b.customerEmail,
+      b.customerPhone,
+      b.notes,
+      b.dateISO,
+      b.time,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
 
     if (haystack.includes(q)) {
       items.push({
@@ -75,7 +92,7 @@ export function splitResultGroups(results: ResultItem[]): {
   bookingItems: ResultItem[]
 } {
   return {
-    serviceItems: results.filter(r => r.group === 'services'),
-    bookingItems: results.filter(r => r.group === 'bookings'),
+    serviceItems: results.filter((r) => r.group === 'services'),
+    bookingItems: results.filter((r) => r.group === 'bookings'),
   }
 }

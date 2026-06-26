@@ -41,9 +41,15 @@ export default function WeekCalendar({
       <div className="flex-between mb-4">
         <h2>{t('dashboard.thisWeek')}</h2>
         <div className="flex flex-gap-2">
-          <Button variant="ghost" size="sm" onClick={onPrevWeek}>{t('dashboard.prev')}</Button>
-          <Button variant="ghost" size="sm" onClick={onToday} disabled={isCurrentWeek}>{t('dashboard.today')}</Button>
-          <Button variant="ghost" size="sm" onClick={onNextWeek}>{t('dashboard.next')}</Button>
+          <Button variant="ghost" size="sm" onClick={onPrevWeek}>
+            {t('dashboard.prev')}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onToday} disabled={isCurrentWeek}>
+            {t('dashboard.today')}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onNextWeek}>
+            {t('dashboard.next')}
+          </Button>
         </div>
       </div>
 
@@ -59,11 +65,17 @@ export default function WeekCalendar({
         </div>
         <div className="week-body">
           <div className="hour-col">
-            {hours.map(h => <div className="hour" key={h}>{h}</div>)}
+            {hours.map((h) => (
+              <div className="hour" key={h}>
+                {h}
+              </div>
+            ))}
           </div>
           {days.map((_, i) => (
             <div className="day-col" key={i}>
-              {hours.map((_, j) => <div className="slot" key={j} />)}
+              {hours.map((_, j) => (
+                <div className="slot" key={j} />
+              ))}
               {(weekEventsByDay[i] || []).map((b) => {
                 const { top, height } = getEventGeometry(b, hourBounds)
                 return (
@@ -75,7 +87,8 @@ export default function WeekCalendar({
                   >
                     <div className="title">{b.service}</div>
                     <div className="time">
-                      {b.time}{b.endTime ? ` – ${b.endTime}` : ''}
+                      {b.time}
+                      {b.endTime ? ` – ${b.endTime}` : ''}
                     </div>
                   </Link>
                 )

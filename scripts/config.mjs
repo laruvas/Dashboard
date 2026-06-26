@@ -13,4 +13,6 @@ export const BCRYPT_ROUNDS = 10
 export const MIN_NOTICE_MIN = 60
 
 export const CORS_ORIGINS = (process.env.CORS_ORIGIN || '*')
-  .split(',').map(s => s.trim()).filter(Boolean)
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean)

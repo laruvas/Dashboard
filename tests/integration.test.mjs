@@ -59,7 +59,9 @@ describe('POST /register', () => {
 
   it('rejects a short password', async () => {
     const res = await request(app).post('/register').send({
-      email: 'short@x.co', password: '123', name: 'X',
+      email: 'short@x.co',
+      password: '123',
+      name: 'X',
     })
     expect(res.status).toBe(400)
     expect(res.body.error).toMatch(/6 characters/)
@@ -68,7 +70,9 @@ describe('POST /register', () => {
   it('rejects a duplicate email', async () => {
     await registerUser({ email: 'dup@x.co' })
     const res = await request(app).post('/register').send({
-      email: 'dup@x.co', password: 'password123', name: 'Y',
+      email: 'dup@x.co',
+      password: 'password123',
+      name: 'Y',
     })
     expect(res.status).toBe(400)
     expect(res.body.error).toMatch(/exists/)
@@ -76,7 +80,9 @@ describe('POST /register', () => {
 
   it('rejects an invalid email format', async () => {
     const res = await request(app).post('/register').send({
-      email: 'not-an-email', password: 'password123', name: 'Z',
+      email: 'not-an-email',
+      password: 'password123',
+      name: 'Z',
     })
     expect(res.status).toBe(400)
   })
@@ -88,7 +94,8 @@ describe('POST /login', () => {
   it('issues a token pair for valid credentials', async () => {
     await registerUser({ email: 'login@x.co', password: 'password123' })
     const res = await request(app).post('/login').send({
-      email: 'login@x.co', password: 'password123',
+      email: 'login@x.co',
+      password: 'password123',
     })
     expect(res.status).toBe(200)
     expect(typeof res.body.accessToken).toBe('string')
@@ -97,7 +104,8 @@ describe('POST /login', () => {
   it('returns 400 on wrong password (not 401, intentionally vague)', async () => {
     await registerUser({ email: 'wrong@x.co', password: 'password123' })
     const res = await request(app).post('/login').send({
-      email: 'wrong@x.co', password: 'wrong-password',
+      email: 'wrong@x.co',
+      password: 'wrong-password',
     })
     expect(res.status).toBe(400)
     expect(res.body.error).toMatch(/incorrect/i)
@@ -108,7 +116,7 @@ describe('Refresh token rotation', () => {
   beforeEach(resetDb)
 
   it('returns a new pair and invalidates the old refresh token', async () => {
-    const { refreshToken, accessToken: firstAccess } = await registerUser({
+    const { refreshToken } = await registerUser({
       email: 'rot@x.co',
     })
 
@@ -140,7 +148,7 @@ describe('Auth middleware', () => {
     expect(res.status).toBe(401)
   })
 
-  it('rejects /users/:id for someone else\'s id', async () => {
+  it("rejects /users/:id for someone else's id", async () => {
     const me = await registerUser()
     const { user: otherUser } = await registerUser({ email: 'other@x.co' })
     const res = await request(app)
@@ -152,13 +160,15 @@ describe('Auth middleware', () => {
 
 describe('validateServicePayload (unit, exported from server.mjs)', () => {
   it('returns [] for a valid payload', () => {
-    expect(validateServicePayload({
-      tag: { en: 't' },
-      name: { en: 'n' },
-      description: { en: 'd' },
-      duration: 60,
-      price: 1000,
-    })).toEqual([])
+    expect(
+      validateServicePayload({
+        tag: { en: 't' },
+        name: { en: 'n' },
+        description: { en: 'd' },
+        duration: 60,
+        price: 1000,
+      }),
+    ).toEqual([])
   })
 
   it('collects multiple errors at once', () => {
@@ -205,15 +215,17 @@ describe('POST /services + GET /availability (full flow)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         tag: { en: 'lesson' },
-        name: { en: 'n' }, description: { en: 'd' },
-        duration: 60, price: 0,
+        name: { en: 'n' },
+        description: { en: 'd' },
+        duration: 60,
+        price: 0,
       })
     const res = await request(app)
       .get(`/availability/${user.id}?date=2099-06-16&duration=60`)
       .set('Authorization', `Bearer ${accessToken}`)
     expect(res.status).toBe(200)
     expect(res.body.slots.length).toBe(9)
-    expect(res.body.slots.every(s => s.available)).toBe(true)
+    expect(res.body.slots.every((s) => s.available)).toBe(true)
   })
 
   it('marks a slot as unavailable after a booking is created', async () => {
@@ -222,26 +234,139 @@ describe('POST /services + GET /availability (full flow)', () => {
       .post('/services')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        tag: { en: 'lesson' }, name: { en: 'n' }, description: { en: 'd' },
-        duration: 60, price: 0,
+        tag: { en: 'lesson' },
+        name: { en: 'n' },
+        description: { en: 'd' },
+        duration: 60,
+        price: 0,
       })
     const serviceId = svcRes.body.id
-    await request(app)
+    await request(app).post('/bookings').set('Authorization', `Bearer ${accessToken}`).send({
+      serviceId,
+      dateISO: '2099-06-16',
+      time: '10:00',
+      endTime: '11:00',
+      durationMin: 60,
+      service: 'n',
+      withName: 'Client',
+    })
+    const res = await request(app)
+      .get(`/availability/${user.id}?date=2099-06-16&duration=60`)
+      .set('Authorization', `Bearer ${accessToken}`)
+    const ten = res.body.slots.find((s) => s.time === '10:00')
+    expect(ten.available).toBe(false)
+  })
+})
+
+describe('Refresh token rotation race protection', () => {
+  beforeEach(resetDb)
+
+  it('allows only one concurrent consume of the same refresh token', async () => {
+    const { refreshToken } = await registerUser({ email: 'race@x.co' })
+
+    const responses = await Promise.all([
+      request(app).post('/refresh').send({ refreshToken }),
+      request(app).post('/refresh').send({ refreshToken }),
+    ])
+
+    const statuses = responses.map((res) => res.status).sort()
+    expect(statuses).toEqual([200, 401])
+  })
+})
+
+describe('POST/PATCH /bookings conflict protection', () => {
+  beforeEach(resetDb)
+
+  async function createService(accessToken, overrides = {}) {
+    const res = await request(app)
+      .post('/services')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        tag: { en: 'lesson' },
+        name: { en: 'Real service' },
+        description: { en: 'real description' },
+        duration: 60,
+        price: 2000,
+        ...overrides,
+      })
+    expect(res.status).toBe(201)
+    return res.body
+  }
+
+  async function createBooking(accessToken, serviceId, overrides = {}) {
+    return request(app)
       .post('/bookings')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         serviceId,
         dateISO: '2099-06-16',
         time: '10:00',
-        endTime: '11:00',
-        durationMin: 60,
-        service: 'n',
         withName: 'Client',
+        customerEmail: 'client@example.com',
+        ...overrides,
       })
+  }
+
+  it('rejects a second booking for the same occupied slot', async () => {
+    const { accessToken } = await registerUser({ email: 'conflict@x.co' })
+    const service = await createService(accessToken)
+
+    const first = await createBooking(accessToken, service.id)
+    expect(first.status).toBe(201)
+
+    const second = await createBooking(accessToken, service.id)
+    expect(second.status).toBe(409)
+    expect(second.body.error).toMatch(/already booked/i)
+  })
+
+  it('rejects partially overlapping bookings', async () => {
+    const { accessToken } = await registerUser({ email: 'overlap@x.co' })
+    const service = await createService(accessToken)
+
+    const first = await createBooking(accessToken, service.id, { time: '10:00' })
+    expect(first.status).toBe(201)
+
+    const overlapping = await createBooking(accessToken, service.id, { time: '10:30' })
+    expect(overlapping.status).toBe(409)
+  })
+
+  it('uses authoritative service duration, price and name from the server', async () => {
+    const { accessToken } = await registerUser({ email: 'authoritative@x.co' })
+    const service = await createService(accessToken, {
+      name: { en: 'Authoritative service' },
+      duration: 45,
+      price: 3000,
+    })
+
+    const res = await createBooking(accessToken, service.id, {
+      service: 'Fake service',
+      durationMin: 999,
+      endTime: '23:59',
+      total: 0,
+    })
+
+    expect(res.status).toBe(201)
+    expect(res.body.service).toBe('Authoritative service')
+    expect(res.body.durationMin).toBe(45)
+    expect(res.body.endTime).toBe('10:45')
+    expect(res.body.total).toBe(3000)
+  })
+
+  it('rejects rescheduling a booking onto another occupied slot', async () => {
+    const { accessToken } = await registerUser({ email: 'reschedule-conflict@x.co' })
+    const service = await createService(accessToken)
+
+    const first = await createBooking(accessToken, service.id, { time: '10:00' })
+    const second = await createBooking(accessToken, service.id, { time: '12:00' })
+    expect(first.status).toBe(201)
+    expect(second.status).toBe(201)
+
     const res = await request(app)
-      .get(`/availability/${user.id}?date=2099-06-16&duration=60`)
+      .patch(`/bookings/${second.body.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
-    const ten = res.body.slots.find(s => s.time === '10:00')
-    expect(ten.available).toBe(false)
+      .send({ dateISO: '2099-06-16', time: '10:00' })
+
+    expect(res.status).toBe(409)
+    expect(res.body.error).toMatch(/already booked/i)
   })
 })

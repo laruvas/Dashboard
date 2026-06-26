@@ -1,5 +1,10 @@
 import {
-  createContext, useCallback, useContext, useEffect, useMemo, useState,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
   type ReactNode,
 } from 'react'
 import { translations, type TKey } from './translations'
@@ -39,9 +44,7 @@ function getInitialLang(): Lang {
 // Простая интерполяция {n} -> value
 function interpolate(str: string, params?: Record<string, string | number>): string {
   if (!params) return str
-  return str.replace(/\{(\w+)\}/g, (_, k: string) =>
-    (k in params ? String(params[k]) : `{${k}}`)
-  )
+  return str.replace(/\{(\w+)\}/g, (_, k: string) => (k in params ? String(params[k]) : `{${k}}`))
 }
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
@@ -59,21 +62,31 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [lang])
 
   const setTheme = useCallback((next: Theme) => setThemeState(next), [])
-  const toggleTheme = useCallback(() => setThemeState(t => (t === 'dark' ? 'light' : 'dark')), [])
+  const toggleTheme = useCallback(() => setThemeState((t) => (t === 'dark' ? 'light' : 'dark')), [])
   const setLang = useCallback((next: Lang) => setLangState(next), [])
-  const toggleLang = useCallback(() => setLangState(l => (l === 'en' ? 'ru' : 'en')), [])
+  const toggleLang = useCallback(() => setLangState((l) => (l === 'en' ? 'ru' : 'en')), [])
 
-  const t = useCallback<SettingsContextValue['t']>((key, params) => {
-    const dict = translations[lang] ?? translations.en
-    const raw = dict[key] ?? translations.en[key] ?? key
-    return interpolate(raw, params)
-  }, [lang])
+  const t = useCallback<SettingsContextValue['t']>(
+    (key, params) => {
+      const dict = translations[lang] ?? translations.en
+      const raw = dict[key] ?? translations.en[key] ?? key
+      return interpolate(raw, params)
+    },
+    [lang],
+  )
 
-  const value = useMemo<SettingsContextValue>(() => ({
-    theme, setTheme, toggleTheme,
-    lang, setLang, toggleLang,
-    t,
-  }), [theme, lang, t, setTheme, toggleTheme, setLang, toggleLang])
+  const value = useMemo<SettingsContextValue>(
+    () => ({
+      theme,
+      setTheme,
+      toggleTheme,
+      lang,
+      setLang,
+      toggleLang,
+      t,
+    }),
+    [theme, lang, t, setTheme, toggleTheme, setLang, toggleLang],
+  )
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>
 }

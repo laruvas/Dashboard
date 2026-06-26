@@ -14,7 +14,9 @@ export const DEFAULT_WORKING_HOURS: WorkingHours = {
  * Backwards-compat: old User.workingHours was {start, end} (one window for all days).
  * Spread into Mon-Fri so existing users don't lose data on first edit.
  */
-export function normalizeWorkingHours(wh: WorkingHours | { start?: string; end?: string } | undefined): WorkingHours {
+export function normalizeWorkingHours(
+  wh: WorkingHours | { start?: string; end?: string } | undefined,
+): WorkingHours {
   if (!wh) return DEFAULT_WORKING_HOURS
 
   const legacy = wh as { start?: string; end?: string }
@@ -27,7 +29,7 @@ export function normalizeWorkingHours(wh: WorkingHours | { start?: string; end?:
   // Recovery: if every day is null or missing (e.g. user accidentally disabled
   // all days, or a buggy save wiped the object), restore defaults so they don't
   // end up with no availability at all.
-  const hasAnyDay = DAY_KEYS.some(k => newShape[k])
+  const hasAnyDay = DAY_KEYS.some((k) => newShape[k])
   if (!hasAnyDay) return DEFAULT_WORKING_HOURS
 
   // Fill in missing (undefined) days from DEFAULT_WORKING_HOURS so partially-saved
@@ -41,7 +43,14 @@ export function normalizeWorkingHours(wh: WorkingHours | { start?: string; end?:
 }
 
 export function getInitials(name: string): string {
-  return name.trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('') || '?'
+  return (
+    name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase() || '')
+      .join('') || '?'
+  )
 }
 
 export function getInitialProfileForm(user: User | null): ProfileFormValues {

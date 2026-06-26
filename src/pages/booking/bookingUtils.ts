@@ -25,15 +25,32 @@ export function toMinutes(time: string): number {
 // "Anna Smith" -> "AS"
 export function initialsFrom(name: string): string {
   if (!name) return '?'
-  return name.trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('') || '?'
+  return (
+    name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase() || '')
+      .join('') || '?'
+  )
 }
 
 export function matchesServiceQuery(s: Service, q: string, lang: Lang): boolean {
   if (!q) return true
   const haystack = [
-    loc(s.name, lang), loc(s.description, lang), loc(s.tag, lang),
-    s.name?.en, s.name?.ru, s.description?.en, s.description?.ru, s.tag?.en, s.tag?.ru,
-  ].filter(Boolean).join(' ').toLowerCase()
+    loc(s.name, lang),
+    loc(s.description, lang),
+    loc(s.tag, lang),
+    s.name?.en,
+    s.name?.ru,
+    s.description?.en,
+    s.description?.ru,
+    s.tag?.en,
+    s.tag?.ru,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
   return haystack.includes(q.toLowerCase())
 }
 

@@ -19,7 +19,9 @@ export default function BookingsHeader({ loading, onRefresh }: BookingsHeaderPro
         <Button variant="ghost" size="sm" onClick={onRefresh} disabled={loading}>
           {loading ? t('common.loading') : t('common.refresh')}
         </Button>
-        <Button as="link" to="/booking" size="sm">+ {t('nav.newBooking')}</Button>
+        <Button as="link" to="/booking" size="sm">
+          + {t('nav.newBooking')}
+        </Button>
       </div>
     </div>
   )

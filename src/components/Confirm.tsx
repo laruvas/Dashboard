@@ -67,11 +67,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
   return (
     <ConfirmContext.Provider value={{ ask }}>
       {children}
-      <Modal
-        open={pending !== null}
-        onClose={() => resolve(false)}
-        title={opts?.title ?? ''}
-      >
+      <Modal open={pending !== null} onClose={() => resolve(false)} title={opts?.title ?? ''}>
         {opts?.message && (
           <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 'var(--s-6)' }}>
             {opts.message}

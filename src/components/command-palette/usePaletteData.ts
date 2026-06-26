@@ -20,9 +20,15 @@ export function usePaletteData(): {
         setServices(s)
         setBookings(b)
       })
-      .catch(() => { /* silent — palette still usable */ })
-      .finally(() => { if (mounted) setLoading(false) })
-    return () => { mounted = false }
+      .catch(() => {
+        /* silent — palette still usable */
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+    return () => {
+      mounted = false
+    }
   }, [])
 
   return { services, bookings, loading }

@@ -54,16 +54,30 @@ export default function RescheduleModal({ booking, onClose, onSubmit }: Reschedu
     setLoading(true)
     setError(null)
     getAvailability(booking.providerId, dateISO, booking.durationMin || 60)
-      .then((res) => { if (mounted) setSlots(res.slots) })
-      .catch(() => { if (mounted) { setSlots([]); setError(t('booking.providerMissing')) } })
-      .finally(() => { if (mounted) setLoading(false) })
-    return () => { mounted = false }
+      .then((res) => {
+        if (mounted) setSlots(res.slots)
+      })
+      .catch(() => {
+        if (mounted) {
+          setSlots([])
+          setError(t('booking.providerMissing'))
+        }
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+    return () => {
+      mounted = false
+    }
   }, [booking, dateISO, t])
 
   const todayISO = useMemo(() => toISODate(new Date()), [])
   const freeTimes = useMemo(
     // Allow keeping the current slot even if it shows up as "taken" (by this same booking).
-    () => slots.filter(s => s.available || (booking && s.time === booking.time && dateISO === booking.dateISO)),
+    () =>
+      slots.filter(
+        (s) => s.available || (booking && s.time === booking.time && dateISO === booking.dateISO),
+      ),
     [slots, booking, dateISO],
   )
 
@@ -104,14 +118,18 @@ export default function RescheduleModal({ booking, onClose, onSubmit }: Reschedu
 
       <Field label={t('booking.availableTimes')}>
         {loading ? (
-          <div className="text-muted" style={{ fontSize: 13 }}>{t('booking.loadingBookings')}</div>
+          <div className="text-muted" style={{ fontSize: 13 }}>
+            {t('booking.loadingBookings')}
+          </div>
         ) : error ? (
           <div style={{ color: 'var(--danger)', fontSize: 13 }}>{error}</div>
         ) : freeTimes.length === 0 ? (
-          <div className="text-muted" style={{ fontSize: 13 }}>{t('booking.dayOff')}</div>
+          <div className="text-muted" style={{ fontSize: 13 }}>
+            {t('booking.dayOff')}
+          </div>
         ) : (
           <div className="slots">
-            {freeTimes.map(s => (
+            {freeTimes.map((s) => (
               <button
                 key={s.time}
                 type="button"
@@ -127,7 +145,8 @@ export default function RescheduleModal({ booking, onClose, onSubmit }: Reschedu
 
       {time && (
         <div className="text-muted mt-2" style={{ fontSize: 13 }}>
-          {time}–{addMinutesHHMM(time, booking.durationMin || 60)} ({booking.durationMin || 60} {t('services.minutes')})
+          {time}–{addMinutesHHMM(time, booking.durationMin || 60)} ({booking.durationMin || 60}{' '}
+          {t('services.minutes')})
         </div>
       )}
 

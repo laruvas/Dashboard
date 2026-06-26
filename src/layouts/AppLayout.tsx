@@ -1,8 +1,14 @@
 import { NavLink, Outlet, Link } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import {
-  IconDashboard, IconCalendar, IconServices, IconCheck,
-  IconBell, IconUser, IconSearch, IconPlus,
+  IconDashboard,
+  IconCalendar,
+  IconServices,
+  IconCheck,
+  IconBell,
+  IconUser,
+  IconSearch,
+  IconPlus,
 } from '../components/Icons'
 import { Avatar } from '../components/UI'
 import { ThemeToggle, LangToggle } from '../components/Toggles'
@@ -13,7 +19,14 @@ import { useAuth } from '../i18n/AuthContext'
 // "Anna Smith" -> "AS"
 function initialsFrom(name: string): string {
   if (!name) return '?'
-  return name.trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('') || '?'
+  return (
+    name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase() || '')
+      .join('') || '?'
+  )
 }
 
 interface NavItemProps {
@@ -47,21 +60,53 @@ export default function AppLayout() {
         </Link>
 
         <div className="nav">
-          <NavItem to="/dashboard"     icon={<IconDashboard />}>{t('nav.dashboard')}</NavItem>
-          <NavItem to="/booking"       icon={<IconCalendar />}>{t('nav.newBooking')}</NavItem>
-          <NavItem to="/services"      icon={<IconServices />}>{t('nav.services')}</NavItem>
-          <NavItem to="/bookings"      icon={<IconCheck />}>{t('nav.bookings')}</NavItem>
-          <NavItem to="/notifications" icon={<IconBell />}>{t('nav.notifications')}</NavItem>
+          <NavItem to="/dashboard" icon={<IconDashboard />}>
+            {t('nav.dashboard')}
+          </NavItem>
+          <NavItem to="/booking" icon={<IconCalendar />}>
+            {t('nav.newBooking')}
+          </NavItem>
+          <NavItem to="/services" icon={<IconServices />}>
+            {t('nav.services')}
+          </NavItem>
+          <NavItem to="/bookings" icon={<IconCheck />}>
+            {t('nav.bookings')}
+          </NavItem>
+          <NavItem to="/notifications" icon={<IconBell />}>
+            {t('nav.notifications')}
+          </NavItem>
 
           <div className="section-label">{t('nav.account')}</div>
-          <NavItem to="/profile" icon={<IconUser />}>{t('nav.profile')}</NavItem>
+          <NavItem to="/profile" icon={<IconUser />}>
+            {t('nav.profile')}
+          </NavItem>
         </div>
 
         <div className="user">
           <Avatar initials={initialsFrom(displayName)} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
-            <div style={{ fontSize: 11.5, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayEmail}</div>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {displayName}
+            </div>
+            <div
+              style={{
+                fontSize: 11.5,
+                color: 'var(--text-muted)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {displayEmail}
+            </div>
           </div>
         </div>
       </aside>
@@ -82,8 +127,16 @@ export default function AppLayout() {
           <div className="flex flex-gap-2" style={{ alignItems: 'center' }}>
             <LangToggle />
             <ThemeToggle />
-            <Link to="/notifications" className="btn btn-ghost btn-sm" title={t('common.notifications')}><IconBell /></Link>
-            <Link to="/booking" className="btn btn-primary btn-sm"><IconPlus /> {t('nav.newBooking')}</Link>
+            <Link
+              to="/notifications"
+              className="btn btn-ghost btn-sm"
+              title={t('common.notifications')}
+            >
+              <IconBell />
+            </Link>
+            <Link to="/booking" className="btn btn-primary btn-sm">
+              <IconPlus /> {t('nav.newBooking')}
+            </Link>
           </div>
         </div>
 

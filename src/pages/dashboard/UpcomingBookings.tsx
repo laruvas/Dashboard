@@ -12,7 +12,12 @@ interface UpcomingBookingsProps {
   showSkeleton: boolean
 }
 
-export default function UpcomingBookings({ bookings, loading, error, showSkeleton }: UpcomingBookingsProps) {
+export default function UpcomingBookings({
+  bookings,
+  loading,
+  error,
+  showSkeleton,
+}: UpcomingBookingsProps) {
   const t = useT()
 
   return (
@@ -23,7 +28,9 @@ export default function UpcomingBookings({ bookings, loading, error, showSkeleto
         <table className="table">
           <TableHead />
           <tbody>
-            {Array.from({ length: 3 }, (_, i) => <SkeletonTableRow key={i} cols={6} />)}
+            {Array.from({ length: 3 }, (_, i) => (
+              <SkeletonTableRow key={i} cols={6} />
+            ))}
           </tbody>
         </table>
       )}
@@ -32,7 +39,11 @@ export default function UpcomingBookings({ bookings, loading, error, showSkeleto
         <EmptyState
           illustration="calendar"
           title={t('dashboard.empty')}
-          action={<Button as="link" to="/booking">+ {t('nav.newBooking')}</Button>}
+          action={
+            <Button as="link" to="/booking">
+              + {t('nav.newBooking')}
+            </Button>
+          }
         />
       )}
 
@@ -51,8 +62,16 @@ export default function UpcomingBookings({ bookings, loading, error, showSkeleto
                     {b.withName || '—'}
                   </div>
                 </td>
-                <td><Pill tone={b.status === 'confirmed' ? 'success' : 'accent'}>{t(`status.${b.status}`)}</Pill></td>
-                <td><Link to={`/bookings/${b.id}`} className="btn-text">{t('action.view.arrow')}</Link></td>
+                <td>
+                  <Pill tone={b.status === 'confirmed' ? 'success' : 'accent'}>
+                    {t(`status.${b.status}`)}
+                  </Pill>
+                </td>
+                <td>
+                  <Link to={`/bookings/${b.id}`} className="btn-text">
+                    {t('action.view.arrow')}
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -31,22 +31,45 @@ export type ButtonProps = ButtonAsButton | ButtonAsLink
 
 export function Button(props: ButtonProps) {
   const { variant = 'primary', size, block, className = '', children } = props
-  const cls = [
-    'btn',
-    `btn-${variant}`,
-    size && `btn-${size}`,
-    block && 'btn-block',
-    className,
-  ].filter(Boolean).join(' ')
+  const cls = ['btn', `btn-${variant}`, size && `btn-${size}`, block && 'btn-block', className]
+    .filter(Boolean)
+    .join(' ')
 
   if (props.as === 'link') {
-    const { as: _as, to, variant: _v, size: _s, block: _b, className: _c, children: _ch, ...rest } = props
-    void _as; void _v; void _s; void _b; void _c; void _ch
-    return <Link to={to} className={cls} {...rest}>{children}</Link>
+    const {
+      as: _as,
+      to,
+      variant: _v,
+      size: _s,
+      block: _b,
+      className: _c,
+      children: _ch,
+      ...rest
+    } = props
+    void _as
+    void _v
+    void _s
+    void _b
+    void _c
+    void _ch
+    return (
+      <Link to={to} className={cls} {...rest}>
+        {children}
+      </Link>
+    )
   }
   const { as: _as, variant: _v, size: _s, block: _b, className: _c, children: _ch, ...rest } = props
-  void _as; void _v; void _s; void _b; void _c; void _ch
-  return <button className={cls} {...rest}>{children}</button>
+  void _as
+  void _v
+  void _s
+  void _b
+  void _c
+  void _ch
+  return (
+    <button className={cls} {...rest}>
+      {children}
+    </button>
+  )
 }
 
 /* ============ Pill ============ */
@@ -58,7 +81,11 @@ interface PillProps {
 }
 
 export function Pill({ tone = 'muted', className = '', children, ...rest }: PillProps) {
-  return <span className={`pill pill-${tone} ${className}`.trim()} {...rest}>{children}</span>
+  return (
+    <span className={`pill pill-${tone} ${className}`.trim()} {...rest}>
+      {children}
+    </span>
+  )
 }
 
 /* ============ Card ============ */
@@ -88,7 +115,11 @@ export function Card(props: CardProps) {
   const cls = ['card', interactive && 'card-interactive', className].filter(Boolean).join(' ')
 
   if (props.as === 'link') {
-    return <Link to={props.to} className={cls} style={style}>{children}</Link>
+    return (
+      <Link to={props.to} className={cls} style={style}>
+        {children}
+      </Link>
+    )
   }
   return (
     <div className={cls} style={style} onClick={props.onClick}>
@@ -186,7 +217,11 @@ export function Tabs<V extends string = string>({ items, value, onChange }: Tabs
           onClick={() => onChange?.(it.value)}
         >
           {it.label}
-          {it.count != null && <span className="text-subtle mono" style={{ marginLeft: 6 }}>{it.count}</span>}
+          {it.count != null && (
+            <span className="text-subtle mono" style={{ marginLeft: 6 }}>
+              {it.count}
+            </span>
+          )}
         </button>
       ))}
     </div>

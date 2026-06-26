@@ -11,7 +11,12 @@ interface BookingDetailActionsProps {
   onDelete: () => void
 }
 
-export default function BookingDetailActions({ booking, busy, onCancel, onDelete }: BookingDetailActionsProps) {
+export default function BookingDetailActions({
+  booking,
+  busy,
+  onCancel,
+  onDelete,
+}: BookingDetailActionsProps) {
   const t = useT()
   const isCancelled = booking.status === 'cancelled'
   const ref = getBookingRef(booking.id)
@@ -25,11 +30,21 @@ export default function BookingDetailActions({ booking, busy, onCancel, onDelete
           {t('conf.btn.addToCal')}
         </Button>
         {!isCancelled && (
-          <Button variant="ghost" onClick={onCancel} disabled={busy} style={{ color: 'var(--warning)' }}>
+          <Button
+            variant="ghost"
+            onClick={onCancel}
+            disabled={busy}
+            style={{ color: 'var(--warning)' }}
+          >
             {busy ? t('bookings.cancelling') : t('bookings.action.cancel')}
           </Button>
         )}
-        <Button variant="ghost" onClick={onDelete} disabled={busy} style={{ color: 'var(--danger)' }}>
+        <Button
+          variant="ghost"
+          onClick={onDelete}
+          disabled={busy}
+          style={{ color: 'var(--danger)' }}
+        >
           {busy ? t('bookings.deleting') : t('bookings.action.delete')}
         </Button>
       </div>

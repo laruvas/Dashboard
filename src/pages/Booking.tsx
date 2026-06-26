@@ -9,8 +9,12 @@ import { useDelayedFlag } from '../components/Skeleton'
 import type { AvailabilitySlot, Booking, DayHours, Service } from '../types'
 import type { CustomerForm, Step } from './booking/bookingTypes'
 import {
-  addMinutesHHMM, getBookingEventDates, initialsFrom,
-  isDateInPast, toISODate, toMinutes,
+  addMinutesHHMM,
+  getBookingEventDates,
+  initialsFrom,
+  isDateInPast,
+  toISODate,
+  toMinutes,
 } from './booking/bookingUtils'
 import DetailsForm from './booking/DetailsForm'
 import ServiceStep from './booking/ServiceStep'
@@ -37,7 +41,12 @@ export default function Booking() {
 
   // These are the EXTERNAL client's details (the person being booked into the
   // user's calendar), so we start empty — never prefill from the logged-in user.
-  const [customer, setCustomer] = useState<CustomerForm>({ name: '', email: '', phone: '', notes: '' })
+  const [customer, setCustomer] = useState<CustomerForm>({
+    name: '',
+    email: '',
+    phone: '',
+    notes: '',
+  })
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [termsError, setTermsError] = useState(false)
 
@@ -58,11 +67,15 @@ export default function Booking() {
 
   const selectedService = useMemo<Service | null>(
     // Compare via String() to handle json-server's mixed number/string ids.
-    () => services.find(s => String(s.id) === String(selectedServiceId)) || null,
-    [services, selectedServiceId]
+    () => services.find((s) => String(s.id) === String(selectedServiceId)) || null,
+    [services, selectedServiceId],
   )
 
-  const dateLabel = date.toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+  const dateLabel = date.toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  })
   const dateISO = useMemo(() => toISODate(date), [date])
 
   useEffect(() => {
@@ -79,8 +92,12 @@ export default function Booking() {
         setServices([])
         setBookings([])
       })
-      .finally(() => { if (mounted) setLoading(false) })
-    return () => { mounted = false }
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+    return () => {
+      mounted = false
+    }
   }, [])
 
   // Days where the user has at least one non-cancelled booking — rendered as
@@ -91,7 +108,7 @@ export default function Booking() {
   // Compare via String() — json-server may return id as number but URL param is always a string.
   useEffect(() => {
     if (!preselectServiceId || services.length === 0) return
-    const match = services.find(s => String(s.id) === String(preselectServiceId))
+    const match = services.find((s) => String(s.id) === String(preselectServiceId))
     if (!match) return
     setSelectedServiceId(String(match.id))
     setStep(2)
@@ -121,24 +138,40 @@ export default function Booking() {
         const status = (err as { status?: number })?.status
         setAvailError(status === 404 ? t('booking.providerMissing') : t('booking.errorCreate'))
       })
-      .finally(() => { if (mounted) setAvailLoading(false) })
-    return () => { mounted = false }
+      .finally(() => {
+        if (mounted) setAvailLoading(false)
+      })
+    return () => {
+      mounted = false
+    }
   }, [selectedService, dateISO, t])
 
   // Split slots into morning (< 13:00) and afternoon for visual grouping.
-  const morningSlots    = useMemo(() => availSlots.filter(s => toMinutes(s.time) <  13 * 60), [availSlots])
-  const afternoonSlots  = useMemo(() => availSlots.filter(s => toMinutes(s.time) >= 13 * 60), [availSlots])
-  const disabledTimeSet = useMemo(() => new Set(availSlots.filter(s => !s.available).map(s => s.time)), [availSlots])
-  const allFreeTimes    = useMemo(() => availSlots.filter(s => s.available).map(s => s.time), [availSlots])
-  const dayOff          = !availLoading && availWindow === null
-  const hasFreeSlots    = allFreeTimes.length > 0
+  const morningSlots = useMemo(
+    () => availSlots.filter((s) => toMinutes(s.time) < 13 * 60),
+    [availSlots],
+  )
+  const afternoonSlots = useMemo(
+    () => availSlots.filter((s) => toMinutes(s.time) >= 13 * 60),
+    [availSlots],
+  )
+  const disabledTimeSet = useMemo(
+    () => new Set(availSlots.filter((s) => !s.available).map((s) => s.time)),
+    [availSlots],
+  )
+  const allFreeTimes = useMemo(
+    () => availSlots.filter((s) => s.available).map((s) => s.time),
+    [availSlots],
+  )
+  const dayOff = !availLoading && availWindow === null
+  const hasFreeSlots = allFreeTimes.length > 0
 
   const isPastDate = useMemo(() => isDateInPast(date), [date])
 
   // Auto-pick the first available slot when (date, slots) change, if current pick is invalid.
   useEffect(() => {
     if (availLoading || availSlots.length === 0) return
-    const currentValid = availSlots.some(s => s.time === time && s.available)
+    const currentValid = availSlots.some((s) => s.time === time && s.available)
     if (currentValid) return
     if (allFreeTimes.length > 0) setTime(allFreeTimes[0])
   }, [availSlots, allFreeTimes, time, availLoading])
@@ -169,12 +202,26 @@ export default function Booking() {
   }
 
   const onConfirm = async () => {
-    if (!termsAccepted) { setTermsError(true); return }
+    if (!termsAccepted) {
+      setTermsError(true)
+      return
+    }
     setTermsError(false)
     setError('')
-    if (!selectedService) { setStep(1); return }
-    if (isPastDate) { setError(t('booking.errorPastDate')); setStep(2); return }
-    if (disabledTimeSet.has(time)) { setError(t('booking.errorSlotTaken')); setStep(2); return }
+    if (!selectedService) {
+      setStep(1)
+      return
+    }
+    if (isPastDate) {
+      setError(t('booking.errorPastDate'))
+      setStep(2)
+      return
+    }
+    if (disabledTimeSet.has(time)) {
+      setError(t('booking.errorSlotTaken'))
+      setStep(2)
+      return
+    }
 
     try {
       setSaving(true)
@@ -201,7 +248,6 @@ export default function Booking() {
       setSaving(false)
     }
   }
-
 
   // ============== STEP 1 ==============
   if (step === 1) {
@@ -241,7 +287,15 @@ export default function Booking() {
           selectedService={selectedService}
           availabilityLoading={availLoading}
           bookedSlotsCount={availSlots.length - allFreeTimes.length}
-          continueDisabled={availLoading || !!availError || !selectedService || isPastDate || dayOff || !hasFreeSlots || disabledTimeSet.has(time)}
+          continueDisabled={
+            availLoading ||
+            !!availError ||
+            !selectedService ||
+            isPastDate ||
+            dayOff ||
+            !hasFreeSlots ||
+            disabledTimeSet.has(time)
+          }
           onDateChange={setDate}
           onTimeChange={setTime}
           onBack={() => setStep(1)}
@@ -287,5 +341,4 @@ export default function Booking() {
       />
     </>
   )
-
 }

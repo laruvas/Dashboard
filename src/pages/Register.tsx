@@ -67,7 +67,14 @@ export default function Register() {
     <AuthShell
       title={t('register.title')}
       subtitle={t('register.subtitle')}
-      footer={<>{t('register.haveAccount')} <Link to="/login" className="btn-text">{t('register.signIn')}</Link></>}
+      footer={
+        <>
+          {t('register.haveAccount')}{' '}
+          <Link to="/login" className="btn-text">
+            {t('register.signIn')}
+          </Link>
+        </>
+      }
     >
       <form onSubmit={submit} noValidate>
         <Field label={t('register.name')}>

@@ -16,17 +16,17 @@ export default function DetailsForm({ defaultValues, onSubmit, onBack }: Details
   const [errors, setErrors] = useState<DetailsErrors>({})
   const [touched, setTouched] = useState<Partial<Record<keyof CustomerForm, boolean>>>({})
 
-  const setField = (k: keyof CustomerForm) =>
-    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const setField =
+    (k: keyof CustomerForm) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const v = e.target.value
-      setValues(prev => ({ ...prev, [k]: v }))
+      setValues((prev) => ({ ...prev, [k]: v }))
       if (touched[k] || errors[k]) {
         setErrors(validateDetails({ ...values, [k]: v }, t))
       }
     }
 
   const markTouched = (k: keyof CustomerForm) => () => {
-    setTouched(prev => ({ ...prev, [k]: true }))
+    setTouched((prev) => ({ ...prev, [k]: true }))
     setErrors(validateDetails(values, t))
   }
 
@@ -97,7 +97,9 @@ export default function DetailsForm({ defaultValues, onSubmit, onBack }: Details
       </Field>
 
       <div className="flex flex-gap-3 mt-4">
-        <Button variant="ghost" type="button" onClick={onBack}>{t('common.back')}</Button>
+        <Button variant="ghost" type="button" onClick={onBack}>
+          {t('common.back')}
+        </Button>
         <Button type="submit">{t('common.continue')}</Button>
       </div>
     </form>

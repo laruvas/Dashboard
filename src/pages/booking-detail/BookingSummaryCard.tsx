@@ -12,7 +12,9 @@ export default function BookingSummaryCard({ booking }: { booking: Booking }) {
       <div className="grid grid-2">
         <div>
           <LabelMono>{t('conf.field.date')}</LabelMono>
-          <div style={{ fontWeight: 600, marginTop: 8 }}>{formatBookingDate(booking.dateISO, lang)}</div>
+          <div style={{ fontWeight: 600, marginTop: 8 }}>
+            {formatBookingDate(booking.dateISO, lang)}
+          </div>
         </div>
         <div>
           <LabelMono>{t('conf.field.time')}</LabelMono>

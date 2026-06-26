@@ -12,9 +12,13 @@ export default function BookingCustomerCard({ booking }: { booking: Booking }) {
         <Avatar initials={booking.initials || '?'} size={40} />
         <div>
           <div style={{ fontWeight: 600 }}>{booking.withName || '—'}</div>
-          <div className="text-muted" style={{ fontSize: 13 }}>{booking.customerEmail}</div>
+          <div className="text-muted" style={{ fontSize: 13 }}>
+            {booking.customerEmail}
+          </div>
           {booking.customerPhone && (
-            <div className="text-muted mono" style={{ fontSize: 13 }}>{booking.customerPhone}</div>
+            <div className="text-muted mono" style={{ fontSize: 13 }}>
+              {booking.customerPhone}
+            </div>
           )}
         </div>
       </div>

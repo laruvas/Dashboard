@@ -71,7 +71,11 @@ export default function DateTimeStep({
           <LabelMono>{dateLabel}</LabelMono>
         </div>
 
-        {error && <div className="card mb-4"><div>⚠ {error}</div></div>}
+        {error && (
+          <div className="card mb-4">
+            <div>⚠ {error}</div>
+          </div>
+        )}
 
         {availabilityError ? (
           <div className="card mb-4" style={{ borderColor: 'rgba(248,113,113,0.32)' }}>
@@ -80,7 +84,9 @@ export default function DateTimeStep({
         ) : dayOff ? (
           <div className="card mb-4">
             <div style={{ fontWeight: 600 }}>{t('booking.dayOff')}</div>
-            <div className="text-muted mt-2" style={{ fontSize: 13 }}>{t('booking.dayOff.desc')}</div>
+            <div className="text-muted mt-2" style={{ fontSize: 13 }}>
+              {t('booking.dayOff.desc')}
+            </div>
           </div>
         ) : (
           <>
@@ -102,7 +108,11 @@ export default function DateTimeStep({
             <div>
               <div>{selectedService ? loc(selectedService.name, lang) : '—'}</div>
               <div className="text-muted mt-2">
-                {dateLabel} · {selectedTime}–{selectedService ? addMinutesHHMM(selectedTime, selectedService.duration) : selectedTime} ({selectedService?.duration || 60} {t('services.minutes')})
+                {dateLabel} · {selectedTime}–
+                {selectedService
+                  ? addMinutesHHMM(selectedTime, selectedService.duration)
+                  : selectedTime}{' '}
+                ({selectedService?.duration || 60} {t('services.minutes')})
               </div>
             </div>
             <div className="text-accent mono">${selectedService?.price ?? 0}</div>
@@ -110,7 +120,9 @@ export default function DateTimeStep({
         </div>
 
         <div className="flex flex-gap-3">
-          <Button variant="ghost" block onClick={onBack}>{t('common.back')}</Button>
+          <Button variant="ghost" block onClick={onBack}>
+            {t('common.back')}
+          </Button>
           <Button block onClick={onContinue} disabled={continueDisabled}>
             {t('common.continue')}
           </Button>

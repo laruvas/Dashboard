@@ -36,10 +36,21 @@ export default function BookingDetail() {
     let mounted = true
     setLoading(true)
     getBooking(id)
-      .then((data) => { if (mounted) { setBooking(data); setError(null) } })
-      .catch(() => { if (mounted) setError(t('bookings.detail.notFound')) })
-      .finally(() => { if (mounted) setLoading(false) })
-    return () => { mounted = false }
+      .then((data) => {
+        if (mounted) {
+          setBooking(data)
+          setError(null)
+        }
+      })
+      .catch(() => {
+        if (mounted) setError(t('bookings.detail.notFound'))
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+    return () => {
+      mounted = false
+    }
   }, [id, t])
 
   const onCancel = async () => {

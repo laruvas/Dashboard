@@ -9,10 +9,17 @@ interface DashboardStatsGridProps {
   showSkeleton: boolean
 }
 
-export default function DashboardStatsGrid({ stats, loading, showSkeleton }: DashboardStatsGridProps) {
+export default function DashboardStatsGrid({
+  stats,
+  loading,
+  showSkeleton,
+}: DashboardStatsGridProps) {
   const t = useT()
 
-  const renderDelta = (d: DashboardDelta | null, key: 'vsYesterday' | 'vsLastWeek' | 'vsLastMonth') => {
+  const renderDelta = (
+    d: DashboardDelta | null,
+    key: 'vsYesterday' | 'vsLastWeek' | 'vsLastMonth',
+  ) => {
     if (!d) return undefined
     return t(`dashboard.stat.delta.${key}`, { n: d.value })
   }
@@ -21,7 +28,10 @@ export default function DashboardStatsGrid({ stats, loading, showSkeleton }: Das
     <div className="grid grid-4 mb-8">
       {loading && showSkeleton ? (
         <>
-          <SkeletonStat /><SkeletonStat /><SkeletonStat /><SkeletonStat />
+          <SkeletonStat />
+          <SkeletonStat />
+          <SkeletonStat />
+          <SkeletonStat />
         </>
       ) : (
         <>
@@ -48,7 +58,11 @@ export default function DashboardStatsGrid({ stats, loading, showSkeleton }: Das
             value={loading ? '—' : stats.monthCancellations}
             delta={renderDelta(stats.monthCancellationsDelta, 'vsLastMonth')}
             // For cancellations, "more" is bad — flip the colour intuitively.
-            down={stats.monthCancellationsDelta ? !stats.monthCancellationsDelta.down && stats.monthCancellationsDelta.value !== '0' : undefined}
+            down={
+              stats.monthCancellationsDelta
+                ? !stats.monthCancellationsDelta.down && stats.monthCancellationsDelta.value !== '0'
+                : undefined
+            }
           />
         </>
       )}

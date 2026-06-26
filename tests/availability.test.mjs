@@ -120,11 +120,18 @@ describe('calculateSlots', () => {
       dateISO: farFuture,
       duration: 60,
     })
-    expect(slots.map(s => s.time)).toEqual([
-      '09:00', '10:00', '11:00', '12:00', '13:00',
-      '14:00', '15:00', '16:00', '17:00',
+    expect(slots.map((s) => s.time)).toEqual([
+      '09:00',
+      '10:00',
+      '11:00',
+      '12:00',
+      '13:00',
+      '14:00',
+      '15:00',
+      '16:00',
+      '17:00',
     ])
-    expect(slots.every(s => s.available)).toBe(true)
+    expect(slots.every((s) => s.available)).toBe(true)
   })
 
   it('drops slots that cannot fit the full duration', () => {
@@ -135,9 +142,15 @@ describe('calculateSlots', () => {
       dateISO: farFuture,
       duration: 120,
     })
-    expect(slots.map(s => s.time)).toEqual([
-      '09:00', '10:00', '11:00', '12:00', '13:00',
-      '14:00', '15:00', '16:00',
+    expect(slots.map((s) => s.time)).toEqual([
+      '09:00',
+      '10:00',
+      '11:00',
+      '12:00',
+      '13:00',
+      '14:00',
+      '15:00',
+      '16:00',
     ])
   })
 
@@ -149,9 +162,9 @@ describe('calculateSlots', () => {
       dateISO: farFuture,
       duration: 60,
     })
-    const ten = slots.find(s => s.time === '10:00')
-    const nine = slots.find(s => s.time === '09:00')
-    const eleven = slots.find(s => s.time === '11:00')
+    const ten = slots.find((s) => s.time === '10:00')
+    const nine = slots.find((s) => s.time === '09:00')
+    const eleven = slots.find((s) => s.time === '11:00')
     expect(ten.available).toBe(false)
     expect(nine.available).toBe(true)
     expect(eleven.available).toBe(true)
@@ -165,9 +178,9 @@ describe('calculateSlots', () => {
       dateISO: farFuture,
       duration: 60,
     })
-    expect(slots.find(s => s.time === '10:00').available).toBe(false)
-    expect(slots.find(s => s.time === '11:00').available).toBe(false)
-    expect(slots.find(s => s.time === '12:00').available).toBe(true)
+    expect(slots.find((s) => s.time === '10:00').available).toBe(false)
+    expect(slots.find((s) => s.time === '11:00').available).toBe(false)
+    expect(slots.find((s) => s.time === '12:00').available).toBe(true)
   })
 
   it('blocks slots earlier than now + minNoticeMin on the queried day', () => {
@@ -180,9 +193,9 @@ describe('calculateSlots', () => {
       duration: 60,
       minNoticeMin: 60,
     })
-    const nine = slots.find(s => s.time === '09:00')
-    const ten = slots.find(s => s.time === '10:00')
-    const eleven = slots.find(s => s.time === '11:00')
+    const nine = slots.find((s) => s.time === '09:00')
+    const ten = slots.find((s) => s.time === '10:00')
+    const eleven = slots.find((s) => s.time === '11:00')
     expect(nine.available).toBe(false)
     expect(ten.available).toBe(false)
     expect(eleven.available).toBe(true)
@@ -198,6 +211,6 @@ describe('calculateSlots', () => {
       duration: 60,
       minNoticeMin: 60,
     })
-    expect(slots.every(s => s.available)).toBe(true)
+    expect(slots.every((s) => s.available)).toBe(true)
   })
 })

@@ -7,7 +7,10 @@ export function listNotifications(): Promise<AppNotification[]> {
 }
 
 /** Mark a single notification as read/unread. */
-export function patchNotification(id: number, patch: { unread?: boolean }): Promise<AppNotification> {
+export function patchNotification(
+  id: number,
+  patch: { unread?: boolean },
+): Promise<AppNotification> {
   return apiFetch<AppNotification>(`/notifications/${id}`, { method: 'PATCH', json: patch })
 }
 

@@ -6,8 +6,8 @@
 const BASE = process.env.API_URL || 'http://localhost:3001'
 
 const seeds = [
-  { name: 'Alex Kim',      email: 'alex@slottr.app',  password: 'demo1234' },
-  { name: 'Maria Orlova',  email: 'maria@slottr.app', password: 'demo1234' },
+  { name: 'Alex Kim', email: 'alex@slottr.app', password: 'demo1234' },
+  { name: 'Maria Orlova', email: 'maria@slottr.app', password: 'demo1234' },
 ]
 
 async function seedOne(user) {
@@ -32,7 +32,7 @@ async function seedOne(user) {
 ;(async () => {
   try {
     for (const u of seeds) await seedOne(u)
-  } catch (e) {
+  } catch {
     console.error('Server unreachable at', BASE)
     console.error('Run `npm run server` first.')
     process.exit(1)

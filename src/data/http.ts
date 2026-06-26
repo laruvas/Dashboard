@@ -13,7 +13,8 @@
 
 // In dev: defaults to local Express on :3001.
 // In prod: set VITE_API_URL on Vercel (e.g. https://slottr-api.onrender.com).
-export const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:3001'
+export const BASE_URL =
+  (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:3001'
 
 export const AUTH_EXPIRED_EVENT = 'slottr:auth-expired'
 
@@ -35,11 +36,18 @@ export function setAuthToken(access: string | null): void {
   if (access === null) currentRefresh = null
 }
 
-export function getAuthToken(): string | null { return currentAccess }
-export function getRefreshToken(): string | null { return currentRefresh }
+export function getAuthToken(): string | null {
+  return currentAccess
+}
+export function getRefreshToken(): string | null {
+  return currentRefresh
+}
 
 export class HttpError extends Error {
-  constructor(message: string, public readonly status: number) {
+  constructor(
+    message: string,
+    public readonly status: number,
+  ) {
     super(message)
     this.name = 'HttpError'
   }

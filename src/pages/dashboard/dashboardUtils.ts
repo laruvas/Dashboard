@@ -1,6 +1,12 @@
 import {
-  addDays, endOfMonth, endOfWeek, isWithinRange,
-  startOfMonth, startOfWeek, timeToMinutes, toISODate,
+  addDays,
+  endOfMonth,
+  endOfWeek,
+  isWithinRange,
+  startOfMonth,
+  startOfWeek,
+  timeToMinutes,
+  toISODate,
 } from '../../utils/date'
 import type { Booking } from '../../types'
 
@@ -44,9 +50,9 @@ export function formatMoneyDiff(curr: number, prev: number): DashboardDelta | nu
 }
 
 export function calculateDashboardStats(bookings: Booking[], now = new Date()): DashboardStats {
-  const active = bookings.filter(b => b.status !== 'cancelled')
-  const cancelled = bookings.filter(b => b.status === 'cancelled')
-  const confirmed = bookings.filter(b => b.status === 'confirmed')
+  const active = bookings.filter((b) => b.status !== 'cancelled')
+  const cancelled = bookings.filter((b) => b.status === 'cancelled')
+  const confirmed = bookings.filter((b) => b.status === 'confirmed')
 
   const todayISO = toISODate(now)
   const yesterdayISO = toISODate(addDays(now, -1))
@@ -61,25 +67,27 @@ export function calculateDashboardStats(bookings: Booking[], now = new Date()): 
   const lastMonthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth(), 0, 23, 59, 59, 999)
   const lastMonthStart = startOfMonth(lastMonthEnd)
 
-  const todayCount = active.filter(b => b.dateISO === todayISO).length
-  const yesterdayCount = active.filter(b => b.dateISO === yesterdayISO).length
+  const todayCount = active.filter((b) => b.dateISO === todayISO).length
+  const yesterdayCount = active.filter((b) => b.dateISO === yesterdayISO).length
 
-  const weekCount = active.filter(b => isWithinRange(b.dateISO, weekStart, weekEnd)).length
-  const lastWeekCount = active.filter(b => isWithinRange(b.dateISO, lastWeekStart, lastWeekEnd)).length
+  const weekCount = active.filter((b) => isWithinRange(b.dateISO, weekStart, weekEnd)).length
+  const lastWeekCount = active.filter((b) =>
+    isWithinRange(b.dateISO, lastWeekStart, lastWeekEnd),
+  ).length
 
   const monthRevenue = confirmed
-    .filter(b => isWithinRange(b.dateISO, monthStart, monthEnd))
+    .filter((b) => isWithinRange(b.dateISO, monthStart, monthEnd))
     .reduce((sum, b) => sum + (Number(b.total) || 0), 0)
   const lastMonthRevenue = confirmed
-    .filter(b => isWithinRange(b.dateISO, lastMonthStart, lastMonthEnd))
+    .filter((b) => isWithinRange(b.dateISO, lastMonthStart, lastMonthEnd))
     .reduce((sum, b) => sum + (Number(b.total) || 0), 0)
 
-  const monthCancellations = cancelled
-    .filter(b => isWithinRange(b.dateISO, monthStart, monthEnd))
-    .length
-  const lastMonthCancellations = cancelled
-    .filter(b => isWithinRange(b.dateISO, lastMonthStart, lastMonthEnd))
-    .length
+  const monthCancellations = cancelled.filter((b) =>
+    isWithinRange(b.dateISO, monthStart, monthEnd),
+  ).length
+  const lastMonthCancellations = cancelled.filter((b) =>
+    isWithinRange(b.dateISO, lastMonthStart, lastMonthEnd),
+  ).length
 
   return {
     todayCount,
@@ -93,7 +101,11 @@ export function calculateDashboardStats(bookings: Booking[], now = new Date()): 
   }
 }
 
-export function groupWeekEvents(bookings: Booking[], weekAnchor: Date, days: Date[]): Record<number, Booking[]> {
+export function groupWeekEvents(
+  bookings: Booking[],
+  weekAnchor: Date,
+  days: Date[],
+): Record<number, Booking[]> {
   const result: Record<number, Booking[]> = {}
   const weekStart = startOfWeek(weekAnchor)
   const weekEnd = endOfWeek(weekAnchor)
@@ -102,7 +114,7 @@ export function groupWeekEvents(bookings: Booking[], weekAnchor: Date, days: Dat
     if (b.status === 'cancelled') continue
     if (!isWithinRange(b.dateISO, weekStart, weekEnd)) continue
 
-    const idx = days.findIndex(d => toISODate(d) === b.dateISO)
+    const idx = days.findIndex((d) => toISODate(d) === b.dateISO)
     if (idx < 0) continue
     if (!result[idx]) result[idx] = []
     result[idx].push(b)
@@ -118,9 +130,7 @@ export function getHourBounds(weekEventsByDay: Record<number, Booking[]>): HourB
   for (const dayBookings of Object.values(weekEventsByDay)) {
     for (const b of dayBookings) {
       const startMin = timeToMinutes(b.time || '00:00')
-      const endMin = b.endTime
-        ? timeToMinutes(b.endTime)
-        : startMin + (Number(b.durationMin) || 60)
+      const endMin = b.endTime ? timeToMinutes(b.endTime) : startMin + (Number(b.durationMin) || 60)
       startHour = Math.min(startHour, Math.floor(startMin / 60))
       endHour = Math.max(endHour, Math.ceil(endMin / 60))
     }
@@ -139,11 +149,12 @@ export function getHours(bounds: HourBounds): string[] {
   )
 }
 
-export function getEventGeometry(b: Booking, hourBounds: HourBounds): { top: number; height: number } {
+export function getEventGeometry(
+  b: Booking,
+  hourBounds: HourBounds,
+): { top: number; height: number } {
   const startMin = timeToMinutes(b.time || '00:00')
-  const endMin = b.endTime
-    ? timeToMinutes(b.endTime)
-    : startMin + (Number(b.durationMin) || 60)
+  const endMin = b.endTime ? timeToMinutes(b.endTime) : startMin + (Number(b.durationMin) || 60)
   const hourStartMin = hourBounds.startHour * 60
   const top = ((startMin - hourStartMin) / 60) * HOUR_HEIGHT
   const height = Math.max(24, ((endMin - startMin) / 60) * HOUR_HEIGHT)
@@ -153,7 +164,7 @@ export function getEventGeometry(b: Booking, hourBounds: HourBounds): { top: num
 export function getUpcomingBookings(bookings: Booking[], now = new Date()): Booking[] {
   const todayISO = toISODate(now)
   return bookings
-    .filter(b => b.dateISO >= todayISO && b.status !== 'cancelled')
+    .filter((b) => b.dateISO >= todayISO && b.status !== 'cancelled')
     .sort((a, b) => {
       const byDate = (a.dateISO || '').localeCompare(b.dateISO || '')
       if (byDate !== 0) return byDate

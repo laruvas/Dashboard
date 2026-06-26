@@ -5,6 +5,7 @@ import {
   getInitials,
   normalizeWorkingHours,
 } from '../src/pages/profile/profileUtils.ts'
+import { makeUser } from './helpers/factories.mjs'
 
 describe('profileUtils', () => {
   it('returns default working hours for missing value', () => {
@@ -38,16 +39,7 @@ describe('profileUtils', () => {
   })
 
   it('creates initial profile form from user data', () => {
-    const form = getInitialProfileForm({
-      id: 1,
-      email: 'anna@example.com',
-      name: 'Anna Smith',
-      displayName: 'Anna',
-      phone: '+1000',
-      timezone: 'Europe/London (GMT+1)',
-      bio: 'Tutor',
-      workingHours: { start: '10:00', end: '16:00' },
-    })
+    const form = getInitialProfileForm(makeUser())
 
     expect(form).toMatchObject({
       fullName: 'Anna Smith',

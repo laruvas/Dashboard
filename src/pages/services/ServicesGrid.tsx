@@ -28,13 +28,11 @@ export default function ServicesGrid({
   onDelete,
 }: ServicesGridProps) {
   const t = useT()
-  const { lang } = useSettings()
-
   return (
     <div className="services-layout">
       <aside className="services-filters">
         <div className="filter-label">{t('services.filters')}</div>
-        {filters.map(f => (
+        {filters.map((f) => (
           <button
             key={f.value}
             className={`filter-item ${activeFilter === f.value ? 'active' : ''}`}
@@ -119,11 +117,22 @@ function ServiceCard({
 
       <div className="flex-between mb-4">
         <Pill tone={service.tone}>{loc(service.tag, lang)}</Pill>
-        <span className="mono text-muted" style={{ fontSize: 12 }}>{service.duration} {t('services.minutes')}</span>
+        <span className="mono text-muted" style={{ fontSize: 12 }}>
+          {service.duration} {t('services.minutes')}
+        </span>
       </div>
-      <h3 className="mb-2" style={{ paddingRight: 80 }}>{loc(service.name, lang)}</h3>
-      <p className="text-muted line-clamp-3" style={{ fontSize: 13 }}>{loc(service.description, lang)}</p>
-      <div className="text-accent mono mt-auto" style={{ fontSize: 16, fontWeight: 600, paddingTop: 'var(--s-6)' }}>${service.price}</div>
+      <h3 className="mb-2" style={{ paddingRight: 80 }}>
+        {loc(service.name, lang)}
+      </h3>
+      <p className="text-muted line-clamp-3" style={{ fontSize: 13 }}>
+        {loc(service.description, lang)}
+      </p>
+      <div
+        className="text-accent mono mt-auto"
+        style={{ fontSize: 16, fontWeight: 600, paddingTop: 'var(--s-6)' }}
+      >
+        ${service.price}
+      </div>
     </Card>
   )
 }

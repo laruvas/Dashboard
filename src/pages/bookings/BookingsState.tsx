@@ -11,11 +11,19 @@ interface BookingsErrorProps {
 
 export function BookingsError({ error }: BookingsErrorProps) {
   return (
-    <div className="mb-4" style={{
-      padding: '12px 16px', border: '1px solid rgba(248,113,113,0.32)',
-      background: 'rgba(248,113,113,0.12)', color: 'var(--danger)',
-      borderRadius: 'var(--r-md)', fontSize: 13,
-    }}>{error}</div>
+    <div
+      className="mb-4"
+      style={{
+        padding: '12px 16px',
+        border: '1px solid rgba(248,113,113,0.32)',
+        background: 'rgba(248,113,113,0.12)',
+        color: 'var(--danger)',
+        borderRadius: 'var(--r-md)',
+        fontSize: 13,
+      }}
+    >
+      {error}
+    </div>
   )
 }
 
@@ -24,7 +32,9 @@ export function BookingsSkeleton() {
     <table className="table">
       <BookingsTableHead />
       <tbody>
-        {Array.from({ length: 5 }, (_, i) => <SkeletonTableRow key={i} cols={7} />)}
+        {Array.from({ length: 5 }, (_, i) => (
+          <SkeletonTableRow key={i} cols={7} />
+        ))}
       </tbody>
     </table>
   )
@@ -40,8 +50,12 @@ export function FirstRunEmptyState() {
       description={t('bookings.empty.first.desc')}
       action={
         <div className="flex flex-gap-2">
-          <Button as="link" to="/booking">+ {t('nav.newBooking')}</Button>
-          <Button as="link" to="/services" variant="ghost">{t('services.add')}</Button>
+          <Button as="link" to="/booking">
+            + {t('nav.newBooking')}
+          </Button>
+          <Button as="link" to="/services" variant="ghost">
+            {t('services.add')}
+          </Button>
         </div>
       }
     />
@@ -71,9 +85,13 @@ export function EmptyBookingsState({ status, query }: { status: StatusTab; query
       illustration="calendar"
       title={titleMap[status]}
       description={descMap[status]}
-      action={status === 'upcoming'
-        ? <Button as="link" to="/booking">+ {t('nav.newBooking')}</Button>
-        : undefined}
+      action={
+        status === 'upcoming' ? (
+          <Button as="link" to="/booking">
+            + {t('nav.newBooking')}
+          </Button>
+        ) : undefined
+      }
     />
   )
 }

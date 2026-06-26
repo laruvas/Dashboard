@@ -5,7 +5,10 @@ export function formatBookingDate(iso: string | undefined, lang: Lang): string {
   const [y, m, d] = iso.split('-').map(Number)
   const date = new Date(y, m - 1, d)
   return date.toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', {
-    weekday: 'short', month: 'long', day: 'numeric', year: 'numeric',
+    weekday: 'short',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
   })
 }
 

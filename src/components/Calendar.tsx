@@ -27,7 +27,10 @@ function buildMonth(year: number, month: number): DayCell[] {
   }
   while (cells.length % 7 !== 0) {
     const last = cells[cells.length - 1].date
-    cells.push({ date: new Date(last.getFullYear(), last.getMonth(), last.getDate() + 1), inMonth: false })
+    cells.push({
+      date: new Date(last.getFullYear(), last.getMonth(), last.getDate() + 1),
+      inMonth: false,
+    })
   }
   return cells
 }
@@ -63,7 +66,7 @@ export default function Calendar({
   const [cursor, setCursor] = useState(new Date(initial.getFullYear(), initial.getMonth(), 1))
 
   const cells = buildMonth(cursor.getFullYear(), cursor.getMonth())
-  const eventDates = new Set(eventsOn.map(d => d.toDateString()))
+  const eventDates = new Set(eventsOn.map((d) => d.toDateString()))
 
   // Localized "Month Year" header via Intl — handles all 12 months in any locale.
   const monthLabel = useMemo(() => {
@@ -90,7 +93,11 @@ export default function Calendar({
         </div>
       </div>
       <div className="cal-grid">
-        {dow.map((d, i) => <div className="dow" key={i}>{d}</div>)}
+        {dow.map((d, i) => (
+          <div className="dow" key={i}>
+            {d}
+          </div>
+        ))}
         {cells.map((c, i) => {
           const isPast = Boolean(minDate && dayCompare(c.date, minDate) < 0)
           const classes = ['day']

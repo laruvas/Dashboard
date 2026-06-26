@@ -6,12 +6,7 @@
 import express from 'express'
 import cors from 'cors'
 import { fileURLToPath } from 'node:url'
-import {
-  CORS_ORIGINS,
-  HAS_CONFIGURED_JWT_SECRET,
-  JWT_EXPIRES_IN,
-  PORT,
-} from './config.mjs'
+import { CORS_ORIGINS, HAS_CONFIGURED_JWT_SECRET, JWT_EXPIRES_IN, PORT } from './config.mjs'
 import { registerAuthRoutes } from './routes/authRoutes.mjs'
 import { registerUserRoutes } from './routes/userRoutes.mjs'
 import { registerServiceRoutes, validateServicePayload } from './routes/serviceRoutes.mjs'
@@ -24,10 +19,12 @@ export { validateServicePayload }
 
 export const app = express()
 
-app.use(cors({
-  origin: CORS_ORIGINS.includes('*') ? true : CORS_ORIGINS,
-  credentials: false,
-}))
+app.use(
+  cors({
+    origin: CORS_ORIGINS.includes('*') ? true : CORS_ORIGINS,
+    credentials: false,
+  }),
+)
 app.use(express.json())
 
 app.get('/healthz', (_req, res) => res.json({ ok: true }))
@@ -39,10 +36,16 @@ registerBookingRoutes(app)
 registerAvailabilityRoutes(app)
 registerNotificationRoutes(app)
 
-purgeExpiredRefreshTokens().catch(() => { /* ignore startup error */ })
-setInterval(() => { purgeExpiredRefreshTokens().catch(() => {}) }, 24 * 60 * 60 * 1000).unref()
+purgeExpiredRefreshTokens().catch(() => {
+  /* ignore startup error */
+})
+setInterval(
+  () => {
+    purgeExpiredRefreshTokens().catch(() => {})
+  },
+  24 * 60 * 60 * 1000,
+).unref()
 
-// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, _next) => {
   console.error('[error]', err)
   res.status(500).json({ error: 'Internal server error' })
@@ -53,7 +56,9 @@ export function startServer(port = PORT) {
   console.log(` {^_^}/ Slottr API on port ${port}`)
   console.log(` DB: ${dbInfo}`)
   console.log(` CORS: ${CORS_ORIGINS.join(', ')}`)
-  console.log(` JWT: HS256, exp ${JWT_EXPIRES_IN}${HAS_CONFIGURED_JWT_SECRET ? '' : ' (dev secret — set JWT_SECRET in prod!)'}`)
+  console.log(
+    ` JWT: HS256, exp ${JWT_EXPIRES_IN}${HAS_CONFIGURED_JWT_SECRET ? '' : ' (dev secret — set JWT_SECRET in prod!)'}`,
+  )
   return app.listen(port)
 }
 

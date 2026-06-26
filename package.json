@@ -14,7 +14,10 @@
     "seed:users": "node scripts/seed-users.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "engines": {
     "node": ">=22"
@@ -27,6 +30,7 @@
     "react-router-dom": "^6.26.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
@@ -34,10 +38,16 @@
     "@vitest/coverage-v8": "^4.1.9",
     "concurrently": "^10.0.3",
     "cors": "^2.8.6",
+    "eslint": "^10.5.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
     "express": "^4.22.2",
+    "globals": "^17.7.0",
     "jsonwebtoken": "^9.0.3",
+    "prettier": "^3.8.5",
     "supertest": "^7.0.0",
     "typescript": "^6.0.3",
+    "typescript-eslint": "^8.62.0",
     "vite": "^8.1.0",
     "vitest": "^4.1.9"
   }

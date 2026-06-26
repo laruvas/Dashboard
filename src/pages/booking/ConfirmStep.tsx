@@ -43,7 +43,9 @@ export default function ConfirmStep({
 
       <Card className="mb-6" style={{ maxWidth: 640 }}>
         <SummaryRow label={t('booking.confirm.section.service')}>
-          <div style={{ fontWeight: 600 }}>{selectedService ? loc(selectedService.name, lang) : '—'}</div>
+          <div style={{ fontWeight: 600 }}>
+            {selectedService ? loc(selectedService.name, lang) : '—'}
+          </div>
           <div className="text-muted mt-2" style={{ fontSize: 13 }}>
             {selectedService?.duration} {t('services.minutes')} · ${selectedService?.price}
           </div>
@@ -62,8 +64,14 @@ export default function ConfirmStep({
 
         <SummaryRow label={t('booking.confirm.section.customer')}>
           <div style={{ fontWeight: 600 }}>{customer.name}</div>
-          <div className="text-muted mt-2" style={{ fontSize: 13 }}>{customer.email}</div>
-          {customer.phone && <div className="text-muted mono" style={{ fontSize: 13 }}>{customer.phone}</div>}
+          <div className="text-muted mt-2" style={{ fontSize: 13 }}>
+            {customer.email}
+          </div>
+          {customer.phone && (
+            <div className="text-muted mono" style={{ fontSize: 13 }}>
+              {customer.phone}
+            </div>
+          )}
         </SummaryRow>
 
         {customer.notes && (
@@ -77,7 +85,10 @@ export default function ConfirmStep({
       </Card>
 
       <div style={{ maxWidth: 640 }}>
-        <label className="flex flex-gap-3 mb-2" style={{ alignItems: 'flex-start', cursor: 'pointer', fontSize: 14 }}>
+        <label
+          className="flex flex-gap-3 mb-2"
+          style={{ alignItems: 'flex-start', cursor: 'pointer', fontSize: 14 }}
+        >
           <input
             type="checkbox"
             checked={termsAccepted}
@@ -92,10 +103,16 @@ export default function ConfirmStep({
           </div>
         )}
 
-        {error && <div className="card mb-4"><div>⚠ {error}</div></div>}
+        {error && (
+          <div className="card mb-4">
+            <div>⚠ {error}</div>
+          </div>
+        )}
 
         <div className="flex flex-gap-3 mt-4">
-          <Button variant="ghost" onClick={onBack} disabled={saving}>{t('common.back')}</Button>
+          <Button variant="ghost" onClick={onBack} disabled={saving}>
+            {t('common.back')}
+          </Button>
           <Button onClick={onConfirm} disabled={saving}>
             {saving ? t('booking.saving') : t('booking.confirm.btn')}
           </Button>

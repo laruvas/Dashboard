@@ -13,7 +13,11 @@ export function login(payload: LoginPayload): Promise<AuthResponse> {
 }
 
 export function register(payload: RegisterPayload): Promise<AuthResponse> {
-  return apiFetch<AuthResponse>('/register', { method: 'POST', json: payload, skipAuthRedirect: true })
+  return apiFetch<AuthResponse>('/register', {
+    method: 'POST',
+    json: payload,
+    skipAuthRedirect: true,
+  })
 }
 
 /** Update user fields. Server enforces ownership via the Bearer token. */

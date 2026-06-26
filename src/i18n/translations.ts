@@ -11,7 +11,8 @@ export const translations = {
     'bookings.action.delete': 'Delete',
     'bookings.action.edit': 'Edit',
     'bookings.deleting': 'Deleting…',
-    'bookings.deleteConfirm': 'Delete booking for {service} on {date} at {time}? This cannot be undone.',
+    'bookings.deleteConfirm':
+      'Delete booking for {service} on {date} at {time}? This cannot be undone.',
     'bookings.empty.upcoming': 'No upcoming bookings.',
     'bookings.empty.upcoming.desc': 'Create your first appointment to see it here.',
     'bookings.empty.past': 'No past bookings yet.',
@@ -72,7 +73,8 @@ export const translations = {
     'dashboard.customer.noUpcoming': 'No upcoming sessions — browse the catalog to book one.',
     'dashboard.customer.next': 'Next session',
     'dashboard.customer.empty': 'No upcoming sessions yet.',
-    'dashboard.customer.empty.desc': 'Browse the catalog and book your first session with a specialist.',
+    'dashboard.customer.empty.desc':
+      'Browse the catalog and book your first session with a specialist.',
     'dashboard.customer.cta': 'Browse catalog',
     'dashboard.customer.viewAll': 'View all bookings',
     'dashboard.errorServer': 'Could not load bookings. Is JSON Server running?',
@@ -151,7 +153,7 @@ export const translations = {
     'conf.backToDashboard': 'Back to dashboard →',
     'conf.youreBooked': "You're booked.",
     'conf.confirmationSentTo': 'Confirmation sent to',
-    'conf.addToCalendar': 'Add it to your calendar so you don\'t forget.',
+    'conf.addToCalendar': "Add it to your calendar so you don't forget.",
     'conf.field.service': 'Service',
     'conf.field.reference': 'Reference',
     'conf.field.date': 'Date',
@@ -182,8 +184,10 @@ export const translations = {
     'bookings.with.provider': 'with {name}',
     'bookings.with.customer': 'for {name}',
     'bookings.empty.first': 'You don\u2019t have any bookings yet.',
-    'bookings.empty.first.desc': 'Browse the catalog to book a session, or publish your own service so clients can book you.',
-    'bookings.empty.first.customer.desc': 'Browse the catalog and book your first session with a specialist.',
+    'bookings.empty.first.desc':
+      'Browse the catalog to book a session, or publish your own service so clients can book you.',
+    'bookings.empty.first.customer.desc':
+      'Browse the catalog and book your first session with a specialist.',
     'bookings.empty.first.provider.desc': 'Publish a service so clients can find and book you.',
     'bookings.empty.incoming': 'No incoming bookings yet.',
     'bookings.empty.incoming.desc': 'Once someone books one of your services, it will appear here.',
@@ -228,7 +232,8 @@ export const translations = {
     'services.errorServer': 'Could not load services. Is JSON Server running?',
     'services.empty': 'No services yet.',
     'booking.catalogEmpty': 'You haven\u2019t created any services yet.',
-    'booking.catalogEmpty.desc': 'Add a service first — then you can book clients into your calendar.',
+    'booking.catalogEmpty.desc':
+      'Add a service first — then you can book clients into your calendar.',
     'services.notFound': 'Service not found.',
     'services.search.placeholder': 'Search services...',
     'services.search.empty': 'No services match your search.',
@@ -313,7 +318,8 @@ export const translations = {
     'auth.sessionExpired': 'Your session has expired. Please log in again.',
 
     'welcome.tagline': 'Appointment scheduling, simplified.',
-    'welcome.description': 'Manage services, accept bookings, and keep your calendar clean — all in one place.',
+    'welcome.description':
+      'Manage services, accept bookings, and keep your calendar clean — all in one place.',
     'welcome.signIn': 'Sign in',
     'welcome.createAccount': 'Create account',
     'welcome.openDashboard': 'Go to dashboard',
@@ -361,7 +367,8 @@ export const translations = {
     'bookings.action.delete': 'Удалить',
     'bookings.action.edit': 'Изменить',
     'bookings.deleting': 'Удаляем…',
-    'bookings.deleteConfirm': 'Удалить запись «{service}» на {date} в {time}? Это действие необратимо.',
+    'bookings.deleteConfirm':
+      'Удалить запись «{service}» на {date} в {time}? Это действие необратимо.',
     'bookings.empty.upcoming': 'Нет предстоящих записей.',
     'bookings.empty.upcoming.desc': 'Создайте первую запись — она появится здесь.',
     'bookings.empty.past': 'Пока нет прошедших записей.',
@@ -419,7 +426,8 @@ export const translations = {
     'dashboard.upcomingNext': 'Предстоящие',
     'dashboard.empty': 'Нет предстоящих записей. Создайте первую.',
     'dashboard.customer.upcoming': 'Предстоящих сессий: {n}.',
-    'dashboard.customer.noUpcoming': 'Предстоящих сессий нет — загляните в каталог, чтобы записаться.',
+    'dashboard.customer.noUpcoming':
+      'Предстоящих сессий нет — загляните в каталог, чтобы записаться.',
     'dashboard.customer.next': 'Ближайшая сессия',
     'dashboard.customer.empty': 'Предстоящих сессий пока нет.',
     'dashboard.customer.empty.desc': 'Откройте каталог и забронируйте первую сессию у специалиста.',
@@ -532,11 +540,15 @@ export const translations = {
     'bookings.with.provider': 'с {name}',
     'bookings.with.customer': 'для {name}',
     'bookings.empty.first': 'У вас пока нет ни одной записи.',
-    'bookings.empty.first.desc': 'Откройте каталог и забронируйте сессию или опубликуйте свою услугу, чтобы клиенты могли записаться к вам.',
-    'bookings.empty.first.customer.desc': 'Откройте каталог и забронируйте первую сессию у специалиста.',
-    'bookings.empty.first.provider.desc': 'Опубликуйте услугу, чтобы клиенты могли вас найти и записаться.',
+    'bookings.empty.first.desc':
+      'Откройте каталог и забронируйте сессию или опубликуйте свою услугу, чтобы клиенты могли записаться к вам.',
+    'bookings.empty.first.customer.desc':
+      'Откройте каталог и забронируйте первую сессию у специалиста.',
+    'bookings.empty.first.provider.desc':
+      'Опубликуйте услугу, чтобы клиенты могли вас найти и записаться.',
     'bookings.empty.incoming': 'Входящих записей пока нет.',
-    'bookings.empty.incoming.desc': 'Как только кто-то забронирует вашу услугу, она появится здесь.',
+    'bookings.empty.incoming.desc':
+      'Как только кто-то забронирует вашу услугу, она появится здесь.',
     'bookings.empty.mine': 'У вас нет записей как у клиента.',
     'bookings.empty.mine.desc': 'Откройте каталог и забронируйте сессию.',
     'bookings.cancelDenied': 'Отменить запись может только специалист.',
@@ -578,7 +590,8 @@ export const translations = {
     'services.errorServer': 'Не удалось загрузить услуги. JSON Server запущен?',
     'services.empty': 'Услуг пока нет.',
     'booking.catalogEmpty': 'У вас пока нет услуг.',
-    'booking.catalogEmpty.desc': 'Сначала добавьте услугу — потом сможете записывать клиентов в свой календарь.',
+    'booking.catalogEmpty.desc':
+      'Сначала добавьте услугу — потом сможете записывать клиентов в свой календарь.',
     'services.notFound': 'Услуга не найдена.',
     'services.search.placeholder': 'Поиск услуг...',
     'services.search.empty': 'Услуг по вашему запросу не найдено.',
@@ -663,7 +676,8 @@ export const translations = {
     'auth.sessionExpired': 'Сессия истекла. Пожалуйста, войдите снова.',
 
     'welcome.tagline': 'Запись на приём — просто.',
-    'welcome.description': 'Управляйте услугами, принимайте записи и держите календарь в порядке — в одном месте.',
+    'welcome.description':
+      'Управляйте услугами, принимайте записи и держите календарь в порядке — в одном месте.',
     'welcome.signIn': 'Войти',
     'welcome.createAccount': 'Создать аккаунт',
     'welcome.openDashboard': 'В личный кабинет',
@@ -705,4 +719,3 @@ export const translations = {
 /** Type of valid translation keys, derived from the English dictionary
  *  (which is guaranteed to contain every key — keep parity with `ru`). */
 export type TKey = keyof typeof translations.en
-

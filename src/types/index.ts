@@ -123,8 +123,8 @@ export type MaybeLocalized = string | Localized | null | undefined
 
 /** A single working window inside a day. */
 export interface DayHours {
-  start: string  // "HH:MM"
-  end: string    // "HH:MM"
+  start: string // "HH:MM"
+  end: string // "HH:MM"
 }
 
 /** Day-of-week keys for WorkingHours. Monday-first to match ISO 8601. */
@@ -153,7 +153,7 @@ export interface User {
 
 /** Availability response from GET /availability/:providerId. */
 export interface AvailabilitySlot {
-  time: string       // "HH:MM"
+  time: string // "HH:MM"
   available: boolean
 }
 

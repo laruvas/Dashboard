@@ -45,17 +45,24 @@ export default function BookingsTable({
                 </div>
               </td>
               <td>
-                <Pill tone={
-                  b.status === 'confirmed' ? 'success' :
-                  b.status === 'cancelled' ? 'danger' : 'accent'
-                }>
+                <Pill
+                  tone={
+                    b.status === 'confirmed'
+                      ? 'success'
+                      : b.status === 'cancelled'
+                        ? 'danger'
+                        : 'accent'
+                  }
+                >
                   {t(`status.${b.status}`)}
                 </Pill>
               </td>
               <td className="mono">${b.total}</td>
               <td style={{ textAlign: 'right' }}>
                 <div className="flex flex-gap-2" style={{ justifyContent: 'flex-end' }}>
-                  <Link to={`/bookings/${b.id}`} className="btn-text">{t('action.view')}</Link>
+                  <Link to={`/bookings/${b.id}`} className="btn-text">
+                    {t('action.view')}
+                  </Link>
                   {showCancel && (
                     <>
                       <button
@@ -100,10 +107,15 @@ export function BookingsTableHead({ actions = false }: { actions?: boolean }) {
   return (
     <thead>
       <tr>
-        <th>{t('table.date')}</th><th>{t('table.time')}</th>
-        <th>{t('table.service')}</th><th>{t('table.with')}</th>
-        <th>{t('table.status')}</th><th>{t('table.total')}</th>
-        <th style={actions ? { textAlign: 'right' } : undefined}>{actions ? t('table.actions') : undefined}</th>
+        <th>{t('table.date')}</th>
+        <th>{t('table.time')}</th>
+        <th>{t('table.service')}</th>
+        <th>{t('table.with')}</th>
+        <th>{t('table.status')}</th>
+        <th>{t('table.total')}</th>
+        <th style={actions ? { textAlign: 'right' } : undefined}>
+          {actions ? t('table.actions') : undefined}
+        </th>
       </tr>
     </thead>
   )

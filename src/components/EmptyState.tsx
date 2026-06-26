@@ -122,6 +122,6 @@ function BellIllustration() {
 const ILLUSTRATIONS: Record<IllustrationKind, ComponentType> = {
   calendar: CalendarIllustration,
   services: ServicesIllustration,
-  search:   SearchIllustration,
-  bell:     BellIllustration,
+  search: SearchIllustration,
+  bell: BellIllustration,
 }

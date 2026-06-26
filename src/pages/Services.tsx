@@ -34,21 +34,31 @@ export default function Services() {
   const load = useCallback((): Promise<void> => {
     setLoading(true)
     return listServices()
-      .then((data) => { setServices(data); setError(null) })
+      .then((data) => {
+        setServices(data)
+        setError(null)
+      })
       .catch(() => setError(t('services.errorServer')))
       .finally(() => setLoading(false))
   }, [t])
 
-  useEffect(() => { void load() }, [load])
+  useEffect(() => {
+    void load()
+  }, [load])
 
   const filters = useMemo(
     () => buildServiceFilters(services, query, lang, t('services.tab.all')),
     [services, query, lang, t],
   )
-  const visible = useMemo(() => filterServices(services, tab, query, lang), [services, tab, query, lang])
+  const visible = useMemo(
+    () => filterServices(services, tab, query, lang),
+    [services, tab, query, lang],
+  )
 
   const openCreate = () => setEditing({ __new: true })
-  const modalTitle = isEditingService(editing) ? t('services.modal.edit') : t('services.modal.create')
+  const modalTitle = isEditingService(editing)
+    ? t('services.modal.edit')
+    : t('services.modal.create')
   const isEmptySearch = !loading && !error && services.length > 0 && visible.length === 0
   const showSkeleton = useDelayedFlag(loading)
 
@@ -64,7 +74,7 @@ export default function Services() {
     try {
       setBusyId(service.id)
       await deleteService(service.id)
-      setServices(prev => prev.filter(s => s.id !== service.id))
+      setServices((prev) => prev.filter((s) => s.id !== service.id))
       toast.success(t('services.action.delete'))
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete')

@@ -18,12 +18,31 @@ export default function AuthShell({ title, subtitle, footer, children }: AuthShe
       </div>
 
       <div className="auth-card">
-        <Link to="/" className="flex flex-gap-3 mb-8" style={{ alignItems: 'center', fontWeight: 700, fontSize: 16 }}>
-          <span style={{ width: 28, height: 28, borderRadius: 7, background: 'var(--accent)', display: 'grid', placeItems: 'center', color: '#fff', fontWeight: 800 }}>S</span>
+        <Link
+          to="/"
+          className="flex flex-gap-3 mb-8"
+          style={{ alignItems: 'center', fontWeight: 700, fontSize: 16 }}
+        >
+          <span
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 7,
+              background: 'var(--accent)',
+              display: 'grid',
+              placeItems: 'center',
+              color: '#fff',
+              fontWeight: 800,
+            }}
+          >
+            S
+          </span>
           Slottr
         </Link>
 
-        <h1 className="mb-2" style={{ fontSize: 28 }}>{title}</h1>
+        <h1 className="mb-2" style={{ fontSize: 28 }}>
+          {title}
+        </h1>
         <p className="subtitle mb-8">{subtitle}</p>
 
         {children}

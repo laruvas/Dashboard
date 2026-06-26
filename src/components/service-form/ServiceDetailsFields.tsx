@@ -7,11 +7,18 @@ import FieldError from './FieldError'
 interface ServiceDetailsFieldsProps {
   values: ServiceFormValues
   errors: ServiceFormErrors
-  setField: (key: keyof ServiceFormValues) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
+  setField: (
+    key: keyof ServiceFormValues,
+  ) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
   markTouched: (key: keyof ServiceFormValues) => () => void
 }
 
-export default function ServiceDetailsFields({ values, errors, setField, markTouched }: ServiceDetailsFieldsProps) {
+export default function ServiceDetailsFields({
+  values,
+  errors,
+  setField,
+  markTouched,
+}: ServiceDetailsFieldsProps) {
   const t = useT()
 
   return (

@@ -16,11 +16,13 @@
 ### 1.1 Установка CLI
 
 **macOS / Linux:**
+
 ```bash
 curl -sSfL https://get.tur.so/install.sh | bash
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 irm get.tur.so/install.ps1 | iex
 ```
@@ -41,6 +43,7 @@ turso db tokens create slottr-prod        # → eyJhbGciOi... (длинный т
 ### Альтернатива без CLI
 
 Можешь создать БД через [веб-консоль Turso](https://turso.tech/app):
+
 - New Database → имя `slottr-prod` → Create
 - Открой её → tab «Connect» → скопируй URL
 - tab «Tokens» → Generate Token → скопируй
@@ -67,14 +70,15 @@ turso db tokens create slottr-prod        # → eyJhbGciOi... (длинный т
 
 В разделе **Environment** добавь 4 переменные:
 
-| Key | Value | Где взять |
-|---|---|---|
-| `JWT_SECRET` | (см. ниже) | `openssl rand -hex 32` в терминале |
-| `CORS_ORIGIN` | `https://slottr-laruvas.vercel.app` | URL фронта (заполнишь после шага 3) |
-| `TURSO_DATABASE_URL` | `libsql://...` | из `turso db show` |
-| `TURSO_AUTH_TOKEN` | `eyJhbGci...` | из `turso db tokens create` |
+| Key                  | Value                               | Где взять                           |
+| -------------------- | ----------------------------------- | ----------------------------------- |
+| `JWT_SECRET`         | (см. ниже)                          | `openssl rand -hex 32` в терминале  |
+| `CORS_ORIGIN`        | `https://slottr-laruvas.vercel.app` | URL фронта (заполнишь после шага 3) |
+| `TURSO_DATABASE_URL` | `libsql://...`                      | из `turso db show`                  |
+| `TURSO_AUTH_TOKEN`   | `eyJhbGci...`                       | из `turso db tokens create`         |
 
 Генерация JWT secret:
+
 ```bash
 openssl rand -hex 32
 # или прямо в node:
@@ -87,6 +91,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 Через 2–4 минуты будет URL вида `https://slottr-api.onrender.com`.
 
 Проверь:
+
 ```bash
 curl https://slottr-api.onrender.com/healthz
 # → {"ok":true}
@@ -114,8 +119,8 @@ curl https://slottr-api.onrender.com/healthz
 
 Раздел **Environment Variables**:
 
-| Key | Value |
-|---|---|
+| Key            | Value                                               |
+| -------------- | --------------------------------------------------- |
 | `VITE_API_URL` | `https://slottr-api.onrender.com` (без `/` в конце) |
 
 ### 3.3 Deploy
@@ -139,12 +144,12 @@ curl https://slottr-api.onrender.com/healthz
 
 ### Если что-то не работает
 
-| Симптом | Причина | Фикс |
-|---|---|---|
-| Network errors / CORS | `CORS_ORIGIN` не совпадает с URL фронта | Render → Environment → исправить |
-| 401 при логине нового юзера | JWT secret поменялся, старые токены инвалидны | Очисти localStorage, залогинься заново |
-| 500 на login/register | Turso credentials не работают | Проверь URL и token в Render env |
-| Cold start > 1 минуты | Render free плана так и работает | На защите прогрей заранее, или upgrade на $7/мес |
+| Симптом                              | Причина                                                                     | Фикс                                                |
+| ------------------------------------ | --------------------------------------------------------------------------- | --------------------------------------------------- |
+| Network errors / CORS                | `CORS_ORIGIN` не совпадает с URL фронта                                     | Render → Environment → исправить                    |
+| 401 при логине нового юзера          | JWT secret поменялся, старые токены инвалидны                               | Очисти localStorage, залогинься заново              |
+| 500 на login/register                | Turso credentials не работают                                               | Проверь URL и token в Render env                    |
+| Cold start > 1 минуты                | Render free плана так и работает                                            | На защите прогрей заранее, или upgrade на $7/мес    |
 | Не сохраняются данные между сессиями | Не подключен Turso, бэк пишет в локальный slottr.db (теряется при рестарте) | Убедись что `TURSO_DATABASE_URL` задан в Render env |
 
 ---
@@ -171,6 +176,7 @@ Password: demo1234
 ```
 
 Альтернатива — через `seed:users` скрипт после деплоя:
+
 ```bash
 # Локально, указав prod-URL:
 API_URL=https://slottr-api.onrender.com npm run seed:users

@@ -49,21 +49,43 @@ export default function Login() {
     <AuthShell
       title={t('login.welcome')}
       subtitle={t('login.subtitle')}
-      footer={<>{t('login.noAccount')} <Link to="/register" className="btn-text">{t('login.signUp')}</Link></>}
+      footer={
+        <>
+          {t('login.noAccount')}{' '}
+          <Link to="/register" className="btn-text">
+            {t('login.signUp')}
+          </Link>
+        </>
+      }
     >
       <form onSubmit={submit}>
         <Field label={t('login.email')}>
-          <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            className="input"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </Field>
         <Field label={t('login.password')}>
-          <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input
+            className="input"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </Field>
 
         <div className="flex-between mb-6" style={{ fontSize: 13 }}>
-          <label className="flex flex-gap-2 text-muted" style={{ alignItems: 'center', cursor: 'pointer' }}>
+          <label
+            className="flex flex-gap-2 text-muted"
+            style={{ alignItems: 'center', cursor: 'pointer' }}
+          >
             <input type="checkbox" defaultChecked /> {t('login.remember')}
           </label>
-          <Link to="#" className="btn-text">{t('login.forgot')}</Link>
+          <Link to="#" className="btn-text">
+            {t('login.forgot')}
+          </Link>
         </div>
 
         <Button size="lg" block type="submit" disabled={submitting}>
@@ -72,12 +94,18 @@ export default function Login() {
 
         <div className="flex flex-gap-3" style={{ alignItems: 'center', margin: 'var(--s-6) 0' }}>
           <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-          <span className="text-subtle" style={{ fontSize: 12 }}>{t('login.or')}</span>
+          <span className="text-subtle" style={{ fontSize: 12 }}>
+            {t('login.or')}
+          </span>
           <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
         </div>
 
-        <Button variant="ghost" size="lg" block type="button" className="mb-2">{t('login.google')}</Button>
-        <Button variant="ghost" size="lg" block type="button">{t('login.apple')}</Button>
+        <Button variant="ghost" size="lg" block type="button" className="mb-2">
+          {t('login.google')}
+        </Button>
+        <Button variant="ghost" size="lg" block type="button">
+          {t('login.apple')}
+        </Button>
       </form>
     </AuthShell>
   )

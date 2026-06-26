@@ -22,9 +22,10 @@ export default function Profile() {
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState<ProfileFormValues>(() => getInitialProfileForm(user))
 
-  const updateField = (key: keyof ProfileFormValues) =>
+  const updateField =
+    (key: keyof ProfileFormValues) =>
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-      setForm(prev => ({ ...prev, [key]: e.target.value }))
+      setForm((prev) => ({ ...prev, [key]: e.target.value }))
     }
 
   const handleLogout = async () => {
@@ -81,7 +82,7 @@ export default function Profile() {
 
           <WorkingHoursCard
             value={form.workingHours}
-            onChange={(workingHours) => setForm(prev => ({ ...prev, workingHours }))}
+            onChange={(workingHours) => setForm((prev) => ({ ...prev, workingHours }))}
           />
 
           <div className="flex-between" style={{ alignItems: 'center' }}>
@@ -94,7 +95,9 @@ export default function Profile() {
               {t('auth.logout')}
             </Button>
             <div className="flex flex-gap-3" style={{ alignItems: 'center' }}>
-              <Button variant="ghost" type="button" disabled={saving}>{t('common.cancel')}</Button>
+              <Button variant="ghost" type="button" disabled={saving}>
+                {t('common.cancel')}
+              </Button>
               <Button type="submit" disabled={saving}>
                 {saving ? t('common.loading') : t('common.save')}
               </Button>

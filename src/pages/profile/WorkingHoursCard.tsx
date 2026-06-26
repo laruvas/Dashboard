@@ -14,7 +14,9 @@ export default function WorkingHoursCard({ value, onChange }: WorkingHoursCardPr
   return (
     <Card className="mb-6">
       <h3 className="mb-4">{t('profile.workingHours')}</h3>
-      <p className="text-muted mb-4" style={{ fontSize: 13 }}>{t('profile.workingHoursHint')}</p>
+      <p className="text-muted mb-4" style={{ fontSize: 13 }}>
+        {t('profile.workingHoursHint')}
+      </p>
       <WorkingHoursEditor value={value} onChange={onChange} />
     </Card>
   )

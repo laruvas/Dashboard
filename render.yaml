@@ -21,7 +21,7 @@ services:
       - key: NODE_VERSION
         value: 20
       - key: JWT_SECRET
-        sync: false        # set manually in Render dashboard
+        sync: false # set manually in Render dashboard
       - key: CORS_ORIGIN
         sync: false
       - key: TURSO_DATABASE_URL

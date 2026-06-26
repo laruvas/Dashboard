@@ -43,7 +43,7 @@ export function normalizeWorkingHours(wh) {
       return acc
     }, {})
   }
-  const hasAnyDay = DAY_KEYS.some(k => wh[k])
+  const hasAnyDay = DAY_KEYS.some((k) => wh[k])
   if (!hasAnyDay) return DEFAULT_WORKING_HOURS
   return wh
 }
@@ -102,7 +102,10 @@ export function calculateSlots({
     } else {
       for (const [bs, be] of blocking) {
         // Half-open intervals [s,e) and [bs,be) overlap iff s < be && bs < e.
-        if (s < be && bs < e) { available = false; break }
+        if (s < be && bs < e) {
+          available = false
+          break
+        }
       }
     }
     slots.push({ time: minToHHMM(s), available })

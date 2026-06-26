@@ -11,10 +11,11 @@ export async function issueRefreshToken(userId) {
   const plain = randomBytes(48).toString('base64url')
   const tokenHash = hashRefresh(plain)
   const expiresAt = new Date(Date.now() + REFRESH_TTL_MS).toISOString()
-  await dbRun(
-    'INSERT INTO refresh_tokens (userId, tokenHash, expiresAt) VALUES (?, ?, ?)',
-    [userId, tokenHash, expiresAt],
-  )
+  await dbRun('INSERT INTO refresh_tokens (userId, tokenHash, expiresAt) VALUES (?, ?, ?)', [
+    userId,
+    tokenHash,
+    expiresAt,
+  ])
   return plain
 }
 
@@ -24,14 +25,14 @@ export async function consumeRefreshToken(plain) {
   const row = await dbGet('SELECT * FROM refresh_tokens WHERE tokenHash = ?', [tokenHash])
   if (!row) return null
 
-  if (new Date(row.expiresAt).getTime() < Date.now()) {
-    await dbRun('DELETE FROM refresh_tokens WHERE id = ?', [Number(row.id)])
-    return null
-  }
+  const deleteResult = await dbRun('DELETE FROM refresh_tokens WHERE tokenHash = ?', [tokenHash])
+  if (deleteResult.rowsAffected !== 1) return null
+
+  if (new Date(row.expiresAt).getTime() < Date.now()) return null
 
   const userRow = await dbGet('SELECT * FROM users WHERE id = ?', [Number(row.userId)])
   if (!userRow) return null
-  return { user: rowToUser(userRow), tokenRow: row }
+  return { user: rowToUser(userRow) }
 }
 
 export async function purgeExpiredRefreshTokens() {

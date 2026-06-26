@@ -5,25 +5,9 @@ import {
   getBookingTimeRange,
   getStatusTone,
 } from '../src/pages/booking-detail/bookingDetailUtils.ts'
+import { makeBooking } from './helpers/factories.mjs'
 
-const booking = {
-  id: 7,
-  providerId: 1,
-  customerId: 1,
-  dateISO: '2099-06-16',
-  time: '10:00',
-  endTime: '11:00',
-  durationMin: 60,
-  service: 'English lesson',
-  total: 100,
-  status: 'confirmed',
-  withName: 'Anna Smith',
-  initials: 'AS',
-  customerEmail: 'anna@example.com',
-  customerPhone: null,
-  notes: null,
-  createdAt: '2099-01-01',
-}
+const booking = makeBooking({ id: 7 })
 
 describe('bookingDetailUtils', () => {
   it('formats booking reference with zero padding', () => {

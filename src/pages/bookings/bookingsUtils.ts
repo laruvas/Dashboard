@@ -5,7 +5,10 @@ export function formatDateShort(iso: string | undefined, lang: Lang): string {
   if (!iso) return '—'
   const [y, m, d] = iso.split('-').map(Number)
   const date = new Date(y, m - 1, d)
-  return date.toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', { month: 'short', day: 'numeric' })
+  return date.toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', {
+    month: 'short',
+    day: 'numeric',
+  })
 }
 
 export function toISODate(d: Date): string {
@@ -24,10 +27,13 @@ export function sortBookings(bookings: Booking[]): Booking[] {
 }
 
 export function annotateBookings(bookings: Booking[]): AnnotatedBooking[] {
-  return bookings.map(b => ({ b }))
+  return bookings.map((b) => ({ b }))
 }
 
-export function groupBookingsByStatus(annotated: AnnotatedBooking[], todayISO = toISODate(new Date())): BookingGroups {
+export function groupBookingsByStatus(
+  annotated: AnnotatedBooking[],
+  todayISO = toISODate(new Date()),
+): BookingGroups {
   const upcoming: AnnotatedBooking[] = []
   const past: AnnotatedBooking[] = []
   const cancelled: AnnotatedBooking[] = []
@@ -50,11 +56,12 @@ export function filterBookings(
   const q = query.trim().toLowerCase()
   if (!q) return list
 
-  return list.filter(({ b }) =>
-    (b.withName || '').toLowerCase().includes(q) ||
-    (b.service || '').toLowerCase().includes(q) ||
-    (b.customerEmail || '').toLowerCase().includes(q) ||
-    (b.dateISO || '').includes(q),
+  return list.filter(
+    ({ b }) =>
+      (b.withName || '').toLowerCase().includes(q) ||
+      (b.service || '').toLowerCase().includes(q) ||
+      (b.customerEmail || '').toLowerCase().includes(q) ||
+      (b.dateISO || '').includes(q),
   )
 }
 

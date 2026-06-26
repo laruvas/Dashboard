@@ -24,7 +24,12 @@ export function LangToggle() {
       onClick={toggleLang}
       title={t('common.lang')}
       aria-label={t('common.lang')}
-      style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600, letterSpacing: '0.04em' }}
+      style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: 12,
+        fontWeight: 600,
+        letterSpacing: '0.04em',
+      }}
     >
       {lang === 'en' ? 'EN' : 'RU'}
     </button>

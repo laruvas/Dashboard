@@ -13,11 +13,10 @@ export const DEFAULT_ACCESS_EXPIRES_IN = '15m'
 export function signAccessToken(user, secret, expiresIn = DEFAULT_ACCESS_EXPIRES_IN) {
   if (!secret) throw new Error('signAccessToken: secret is required')
   if (!user || user.id == null) throw new Error('signAccessToken: user.id is required')
-  return jwt.sign(
-    { sub: String(user.id), email: user.email },
-    secret,
-    { expiresIn, algorithm: 'HS256' },
-  )
+  return jwt.sign({ sub: String(user.id), email: user.email }, secret, {
+    expiresIn,
+    algorithm: 'HS256',
+  })
 }
 
 /** SHA-256 hex digest of a refresh token. We store only the hash, never the plain text. */

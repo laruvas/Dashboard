@@ -34,7 +34,7 @@ export default function ServiceStep({
   const t = useT()
   const { lang } = useSettings()
 
-  const matchedAll = services.filter(s => matchesServiceQuery(s, query, lang))
+  const matchedAll = services.filter((s) => matchesServiceQuery(s, query, lang))
   const seen = new Map<string, Service['tag']>()
   for (const s of services) {
     const key = s.tag?.en
@@ -46,13 +46,13 @@ export default function ServiceStep({
     ...[...seen.entries()].map(([key, tag]) => ({
       value: key,
       label: loc(tag, lang),
-      count: matchedAll.filter(s => s.tag?.en === key).length,
+      count: matchedAll.filter((s) => s.tag?.en === key).length,
     })),
   ]
 
   let visible = services
-  if (selectedTag !== 'all') visible = visible.filter(s => s.tag?.en === selectedTag)
-  if (query) visible = visible.filter(s => matchesServiceQuery(s, query, lang))
+  if (selectedTag !== 'all') visible = visible.filter((s) => s.tag?.en === selectedTag)
+  if (query) visible = visible.filter((s) => matchesServiceQuery(s, query, lang))
 
   const isEmptySearch = !loading && services.length > 0 && visible.length === 0
 
@@ -68,7 +68,11 @@ export default function ServiceStep({
           illustration="services"
           title={t('booking.catalogEmpty')}
           description={t('booking.catalogEmpty.desc')}
-          action={<Button as="link" to="/services">{t('services.add')}</Button>}
+          action={
+            <Button as="link" to="/services">
+              {t('services.add')}
+            </Button>
+          }
         />
       )}
 
@@ -83,7 +87,7 @@ export default function ServiceStep({
           <div className="services-layout">
             <aside className="services-filters">
               <div className="filter-label">{t('services.filters')}</div>
-              {filters.map(f => (
+              {filters.map((f) => (
                 <button
                   key={f.value}
                   className={`filter-item ${selectedTag === f.value ? 'active' : ''}`}
@@ -111,12 +115,21 @@ export default function ServiceStep({
                       >
                         <div className="flex-between mb-4">
                           <Pill tone={s.tone}>{loc(s.tag, lang)}</Pill>
-                          <span className="mono text-muted" style={{ fontSize: 12 }}>{s.duration} {t('services.minutes')}</span>
+                          <span className="mono text-muted" style={{ fontSize: 12 }}>
+                            {s.duration} {t('services.minutes')}
+                          </span>
                         </div>
                         <h3 className="mb-2">{loc(s.name, lang)}</h3>
-                        <p className="text-muted line-clamp-3" style={{ fontSize: 13 }}>{loc(s.description, lang)}</p>
+                        <p className="text-muted line-clamp-3" style={{ fontSize: 13 }}>
+                          {loc(s.description, lang)}
+                        </p>
                         <div className="flex-between mt-auto" style={{ paddingTop: 'var(--s-6)' }}>
-                          <span className="text-accent mono" style={{ fontSize: 16, fontWeight: 600 }}>${s.price}</span>
+                          <span
+                            className="text-accent mono"
+                            style={{ fontSize: 16, fontWeight: 600 }}
+                          >
+                            ${s.price}
+                          </span>
                           <Link
                             to={`/services/${s.id}`}
                             onClick={(e) => e.stopPropagation()}

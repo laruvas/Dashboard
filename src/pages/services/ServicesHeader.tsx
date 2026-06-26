@@ -14,7 +14,9 @@ export default function ServicesHeader({ onCreate }: ServicesHeaderProps) {
         <h1>{t('services.title')}</h1>
         <p className="subtitle mt-2">{t('services.subtitle')}</p>
       </div>
-      <Button variant="ghost" onClick={onCreate}>{t('services.add')}</Button>
+      <Button variant="ghost" onClick={onCreate}>
+        {t('services.add')}
+      </Button>
     </div>
   )
 }

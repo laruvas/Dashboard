@@ -1,38 +1,14 @@
+import { makeBooking, makeService } from './helpers/factories.mjs'
 import { describe, expect, it } from 'vitest'
-import { buildPaletteResults, splitResultGroups } from '../src/components/command-palette/commandPaletteUtils.ts'
+import {
+  buildPaletteResults,
+  splitResultGroups,
+} from '../src/components/command-palette/commandPaletteUtils.ts'
 
-const t = (key) => key === 'services.minutes' ? 'min' : key
+const t = (key) => (key === 'services.minutes' ? 'min' : key)
 
-const service = {
-  id: 'svc-1',
-  providerId: 1,
-  tag: { en: 'lesson', ru: 'урок' },
-  tone: 'accent',
-  duration: 60,
-  price: 100,
-  name: { en: 'English lesson', ru: 'Урок английского' },
-  description: { en: 'Speaking practice', ru: 'Разговорная практика' },
-}
-
-const booking = {
-  id: 7,
-  providerId: 1,
-  customerId: 1,
-  serviceId: 'svc-1',
-  dateISO: '2099-06-16',
-  time: '10:00',
-  endTime: '11:00',
-  durationMin: 60,
-  service: 'English lesson',
-  total: 100,
-  status: 'confirmed',
-  withName: 'Anna Smith',
-  initials: 'AS',
-  customerEmail: 'anna@example.com',
-  customerPhone: '+100000000',
-  notes: 'Bring workbook',
-  createdAt: '2099-01-01',
-}
+const service = makeService()
+const booking = makeBooking({ id: 7 })
 
 describe('commandPaletteUtils', () => {
   it('returns no results for an empty query', () => {

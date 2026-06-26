@@ -11,7 +11,16 @@
 // pair into localStorage. The user never sees a re-login screen as long as
 // the refresh token is alive.
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 import {
   login as apiLogin,
   register as apiRegister,
@@ -109,13 +118,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!stored) return
     fetchMe(stored.user.id)
       .then((fresh) => {
-        setState((prev) => prev ? { ...prev, user: fresh } : prev)
+        setState((prev) => (prev ? { ...prev, user: fresh } : prev))
       })
       .catch(() => {
         // 401 → http.ts dispatched AUTH_EXPIRED_EVENT already.
         // Other errors → keep cached state (offline-ish behaviour).
       })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   /** Hydrate user + tokens from a login/register response. */
@@ -141,25 +149,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     // Invalidate refresh on the server (best-effort, fire-and-forget).
     const rt = stateRef.current?.refreshToken
-    if (rt) serverLogout(rt).catch(() => { /* ignore — local state still cleared */ })
+    if (rt)
+      serverLogout(rt).catch(() => {
+        /* ignore — local state still cleared */
+      })
     setState(null)
   }, [])
 
-  const updateProfile = useCallback(async (patch: Partial<Omit<User, 'id'>>) => {
-    if (!state) throw new Error('Not authenticated')
-    const updated = await apiUpdateUser(state.user.id, patch)
-    setState({ ...state, user: updated })
-  }, [state])
+  const updateProfile = useCallback(
+    async (patch: Partial<Omit<User, 'id'>>) => {
+      if (!state) throw new Error('Not authenticated')
+      const updated = await apiUpdateUser(state.user.id, patch)
+      setState({ ...state, user: updated })
+    },
+    [state],
+  )
 
-  const value = useMemo<AuthContextValue>(() => ({
-    user: state?.user ?? null,
-    token: state?.accessToken ?? null,
-    isAuthenticated: !!state,
-    login,
-    register,
-    logout,
-    updateProfile,
-  }), [state, login, register, logout, updateProfile])
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user: state?.user ?? null,
+      token: state?.accessToken ?? null,
+      isAuthenticated: !!state,
+      login,
+      register,
+      logout,
+      updateProfile,
+    }),
+    [state, login, register, logout, updateProfile],
+  )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

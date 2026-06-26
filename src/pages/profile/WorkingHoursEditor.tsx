@@ -24,12 +24,15 @@ export default function WorkingHoursEditor({ value, onChange }: WorkingHoursEdit
         const enabled = day != null
         const eff = day ?? fallback
         return (
-          <div key={key} style={{
-            display: 'grid',
-            gridTemplateColumns: '110px auto 1fr 1fr',
-            alignItems: 'center',
-            gap: 12,
-          }}>
+          <div
+            key={key}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '110px auto 1fr 1fr',
+              alignItems: 'center',
+              gap: 12,
+            }}
+          >
             <label className="flex flex-gap-2" style={{ alignItems: 'center', cursor: 'pointer' }}>
               <input
                 type="checkbox"

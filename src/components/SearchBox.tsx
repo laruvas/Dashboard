@@ -7,7 +7,12 @@ interface SearchBoxProps {
   className?: string
 }
 
-export default function SearchBox({ value, placeholder, onChange, className = 'mb-6' }: SearchBoxProps) {
+export default function SearchBox({
+  value,
+  placeholder,
+  onChange,
+  className = 'mb-6',
+}: SearchBoxProps) {
   return (
     <div
       className={className}
@@ -16,7 +21,9 @@ export default function SearchBox({ value, placeholder, onChange, className = 'm
         border: '1px solid var(--border)',
         borderRadius: 'var(--r-md)',
         padding: 'var(--s-2) var(--s-3)',
-        display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--s-2)',
         maxWidth: 420,
       }}
     >
@@ -27,8 +34,12 @@ export default function SearchBox({ value, placeholder, onChange, className = 'm
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         style={{
-          flex: 1, border: 'none', outline: 'none', background: 'none',
-          color: 'var(--text)', fontSize: 13,
+          flex: 1,
+          border: 'none',
+          outline: 'none',
+          background: 'none',
+          color: 'var(--text)',
+          fontSize: 13,
         }}
       />
     </div>

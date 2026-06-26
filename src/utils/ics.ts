@@ -17,8 +17,10 @@ function toLocalStamp(dateISO: string, time: string): string {
 // "20260610T215543Z" (UTC, for DTSTAMP)
 function nowUtcStamp(): string {
   const d = new Date()
-  return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T` +
-         `${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`
+  return (
+    `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T` +
+    `${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`
+  )
 }
 
 // Escape per RFC 5545 §3.3.11
@@ -45,14 +47,14 @@ function fold(line: string): string {
 export function buildIcsBlob(booking: Booking): Blob {
   const tzid = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
   const dtStart = toLocalStamp(booking.dateISO, booking.time)
-  const dtEnd   = toLocalStamp(booking.dateISO, booking.endTime || booking.time)
-  const uid     = `${booking.id}@slottr.app`
+  const dtEnd = toLocalStamp(booking.dateISO, booking.endTime || booking.time)
+  const uid = `${booking.id}@slottr.app`
 
-  const summary  = `${booking.service}${booking.withName ? ` — ${booking.withName}` : ''}`
+  const summary = `${booking.service}${booking.withName ? ` — ${booking.withName}` : ''}`
   const descBits: string[] = []
   if (booking.customerEmail) descBits.push(`Customer: ${booking.customerEmail}`)
   if (booking.customerPhone) descBits.push(`Phone: ${booking.customerPhone}`)
-  if (booking.notes)         descBits.push(`Notes: ${booking.notes}`)
+  if (booking.notes) descBits.push(`Notes: ${booking.notes}`)
   if (booking.total != null) descBits.push(`Total: $${booking.total}`)
   const description = descBits.join('\n')
 

@@ -51,7 +51,9 @@ export default function Bookings() {
       .finally(() => setLoading(false))
   }, [t])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => {
+    load()
+  }, [load])
 
   // Wrap into uniform shape so downstream code (which used to read `.b`/`.role`)
   // still works after the role-split was removed in the single-tenant refactor.
@@ -63,7 +65,7 @@ export default function Bookings() {
     if (!editing) return
     const endTime = addMinutesHHMM(time, editing.durationMin || 60)
     const updated = await patchBooking(editing.id, { dateISO, time, endTime })
-    setBookings(prev => prev.map(x => x.id === editing.id ? { ...x, ...updated } : x))
+    setBookings((prev) => prev.map((x) => (x.id === editing.id ? { ...x, ...updated } : x)))
     toast.success(t('common.save'))
   }
 
@@ -83,7 +85,7 @@ export default function Bookings() {
     try {
       setBusyId(b.id)
       await patchBooking(b.id, { status: 'cancelled' })
-      setBookings(prev => prev.map(x => x.id === b.id ? { ...x, status: 'cancelled' } : x))
+      setBookings((prev) => prev.map((x) => (x.id === b.id ? { ...x, status: 'cancelled' } : x)))
       toast.success(t('bookings.action.cancel'))
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Failed to cancel booking')
@@ -108,7 +110,7 @@ export default function Bookings() {
     try {
       setBusyId(b.id)
       await deleteBooking(b.id)
-      setBookings(prev => prev.filter(x => x.id !== b.id))
+      setBookings((prev) => prev.filter((x) => x.id !== b.id))
       toast.success(t('bookings.action.delete'))
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Failed to delete booking')
@@ -118,11 +120,15 @@ export default function Bookings() {
   }
 
   // Hide tab counts while loading — they'd flicker from 0 → N once data arrives.
-  const count = (n: number) => loading ? undefined : n
+  const count = (n: number) => (loading ? undefined : n)
   const tabs: TabItem<StatusTab>[] = [
     { value: 'upcoming', label: t('bookings.tab.upcoming'), count: count(groups.upcoming.length) },
     { value: 'past', label: t('bookings.tab.past'), count: count(groups.past.length) },
-    { value: 'cancelled', label: t('bookings.tab.cancelled'), count: count(groups.cancelled.length) },
+    {
+      value: 'cancelled',
+      label: t('bookings.tab.cancelled'),
+      count: count(groups.cancelled.length),
+    },
   ]
 
   const showSkeleton = useDelayedFlag(loading)

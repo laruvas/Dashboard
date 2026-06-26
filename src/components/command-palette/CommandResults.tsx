@@ -29,11 +29,15 @@ export default function CommandResults({
       {loading && query && <SkeletonList count={4} />}
 
       {!loading && !query && (
-        <div className="empty" style={{ padding: 'var(--s-8)' }}>{t('palette.empty.start')}</div>
+        <div className="empty" style={{ padding: 'var(--s-8)' }}>
+          {t('palette.empty.start')}
+        </div>
       )}
 
       {!loading && query && results.length === 0 && (
-        <div className="empty" style={{ padding: 'var(--s-8)' }}>{t('palette.empty.noResults')}</div>
+        <div className="empty" style={{ padding: 'var(--s-8)' }}>
+          {t('palette.empty.noResults')}
+        </div>
       )}
 
       {results.length > 0 && (
@@ -80,21 +84,28 @@ export default function CommandResults({
 function Group({ title, children }: { title: ReactNode; children: ReactNode }) {
   return (
     <div style={{ marginBottom: 'var(--s-2)' }}>
-      <div style={{
-        padding: 'var(--s-2) var(--s-5)',
-        fontFamily: 'var(--font-mono)',
-        fontSize: 11,
-        color: 'var(--text-subtle)',
-        textTransform: 'uppercase',
-        letterSpacing: '0.06em',
-      }}>{title}</div>
+      <div
+        style={{
+          padding: 'var(--s-2) var(--s-5)',
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          color: 'var(--text-subtle)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+        }}
+      >
+        {title}
+      </div>
       {children}
     </div>
   )
 }
 
 function ResultRow({
-  item, active, onClick, onHover,
+  item,
+  active,
+  onClick,
+  onHover,
 }: {
   item: ResultItem
   active: boolean
@@ -107,7 +118,9 @@ function ResultRow({
       onClick={onClick}
       onMouseEnter={onHover}
       style={{
-        display: 'block', width: '100%', textAlign: 'left',
+        display: 'block',
+        width: '100%',
+        textAlign: 'left',
         padding: 'var(--s-3) var(--s-5)',
         background: active ? 'var(--bg-hover)' : 'transparent',
         color: 'var(--text)',

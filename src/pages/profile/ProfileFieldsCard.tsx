@@ -8,11 +8,18 @@ import { getInitials } from './profileUtils'
 interface ProfileFieldsCardProps {
   form: ProfileFormValues
   lang: Lang
-  onFieldChange: (key: keyof ProfileFormValues) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
+  onFieldChange: (
+    key: keyof ProfileFormValues,
+  ) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
   onLangChange: (lang: Lang) => void
 }
 
-export default function ProfileFieldsCard({ form, lang, onFieldChange, onLangChange }: ProfileFieldsCardProps) {
+export default function ProfileFieldsCard({
+  form,
+  lang,
+  onFieldChange,
+  onLangChange,
+}: ProfileFieldsCardProps) {
   const t = useT()
 
   return (
@@ -22,15 +29,29 @@ export default function ProfileFieldsCard({ form, lang, onFieldChange, onLangCha
         <Avatar initials={getInitials(form.displayName || form.fullName || '?')} size={64} />
         <div>
           <div style={{ fontWeight: 600 }}>{form.displayName || form.fullName || '—'}</div>
-          <div className="text-muted mt-2" style={{ fontSize: 13 }}>{form.email || ''}</div>
+          <div className="text-muted mt-2" style={{ fontSize: 13 }}>
+            {form.email || ''}
+          </div>
         </div>
       </div>
 
       <div className="grid grid-2">
-        <Field label={t('profile.field.fullName')}><input className="input" value={form.fullName} onChange={onFieldChange('fullName')} /></Field>
-        <Field label={t('profile.field.displayName')}><input className="input" value={form.displayName} onChange={onFieldChange('displayName')} /></Field>
-        <Field label={t('profile.field.email')}><input className="input" value={form.email} onChange={onFieldChange('email')} /></Field>
-        <Field label={t('profile.field.phone')}><input className="input" value={form.phone} onChange={onFieldChange('phone')} /></Field>
+        <Field label={t('profile.field.fullName')}>
+          <input className="input" value={form.fullName} onChange={onFieldChange('fullName')} />
+        </Field>
+        <Field label={t('profile.field.displayName')}>
+          <input
+            className="input"
+            value={form.displayName}
+            onChange={onFieldChange('displayName')}
+          />
+        </Field>
+        <Field label={t('profile.field.email')}>
+          <input className="input" value={form.email} onChange={onFieldChange('email')} />
+        </Field>
+        <Field label={t('profile.field.phone')}>
+          <input className="input" value={form.phone} onChange={onFieldChange('phone')} />
+        </Field>
         <Field label={t('profile.field.timezone')}>
           <select className="select" value={form.timezone} onChange={onFieldChange('timezone')}>
             <option>Europe/Moscow (GMT+3)</option>
